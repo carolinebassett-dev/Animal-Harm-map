@@ -13,13 +13,13 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: sans-serif; background: #f9f9f7; color: #222; }
-    header { padding: 14px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; display: flex; align-items: center; gap: 12px; }
+    header { padding: 14px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; }
     header h1 { font-size: 17px; font-weight: 600; }
-    header p { font-size: 13px; color: #666; }
-    #controls { padding: 12px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    header p { font-size: 13px; color: #666; margin-top: 2px; }
+    #controls { padding: 12px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; display: flex; flex-wrap: wrap; gap: 8px; }
     .filter-btn { font-size: 13px; padding: 5px 14px; border-radius: 20px; border: 1px solid #ddd; background: #fff; color: #555; cursor: pointer; }
     .filter-btn.active { background: #222; color: #fff; border-color: #222; }
-    #stat-bar { padding: 10px 20px; background: #f2f2f0; display: flex; flex-wrap: wrap; gap: 10px; font-size: 13px; }
+    #stat-bar { padding: 10px 20px; background: #f2f2f0; display: flex; flex-wrap: wrap; gap: 10px; }
     .stat { background: #fff; border-radius: 8px; padding: 7px 14px; border: 1px solid #e5e5e5; }
     .stat span { font-size: 18px; font-weight: 600; display: block; }
     .stat label { color: #888; font-size: 12px; }
@@ -33,12 +33,9 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
 <body>
 
 <header>
-  <div>
-    <h1>NZ Animal Harm Map</h1>
-    <p>Community-reported incidents of intentional animal harm in New Zealand</p>
-  </div>
+  <h1>NZ Animal Harm Map</h1>
+  <p>Community-reported incidents of intentional animal harm in New Zealand</p>
 </header>
-
 <div id="controls"></div>
 <div id="stat-bar"></div>
 <div id="status">Loading data...</div>
@@ -48,7 +45,7 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 const SHEET_ID = '1xrwxrhoQRIShSz1SHsbrtnX4AA_cblp9_fja8yXDHNY';
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv&gid=0';
 
 const METHODS = {
   poison:   { color: '#1a1a1a', label: 'Poison' },
@@ -59,39 +56,55 @@ const METHODS = {
   other:    { color: '#9b59b6', label: 'Other' }
 };
 
-let allData = [];
-let map, clusterGroup;
+var allData = [];
+var clusterGroup;
+
+var leafletMap = L.map('map', { center: [-41.3, 172.5], zoom: 6 });
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+}).addTo(leafletMap);
+
+var legend = L.control({ position: 'bottomright' });
+legend.onAdd = function() {
+  var d = L.DomUtil.create('div', 'legend');
+  d.innerHTML = Object.entries(METHODS).map(function(entry) {
+    return '<div class="legend-row"><span class="dot" style="background:' + entry[1].color + '"></span>' + entry[1].label + '</div>';
+  }).join('');
+  return d;
+};
+legend.addTo(leafletMap);
+
+clusterGroup = L.markerClusterGroup({ maxClusterRadius: 40 });
+leafletMap.addLayer(clusterGroup);
 
 function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
-  return lines.slice(1).map(line => {
-    const vals = [];
-    let cur = '', inQ = false;
-    for (let c of line) {
+  var lines = text.trim().split('\n');
+  var headers = lines[0].split(',').map(function(h) { return h.trim().replace(/^"|"$/g, '').toLowerCase(); });
+  return lines.slice(1).map(function(line) {
+    var vals = [], cur = '', inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var c = line[i];
       if (c === '"') inQ = !inQ;
       else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
       else cur += c;
     }
     vals.push(cur.trim());
-    const row = {};
-    headers.forEach((h, i) => row[h] = (vals[i] || '').replace(/^"|"$/g, ''));
+    var row = {};
+    headers.forEach(function(h, i) { row[h] = (vals[i] || '').replace(/^"|"$/g, ''); });
     return row;
-  }).filter(r => r.address || (r.lat && r.lng));
+  }).filter(function(r) { return r.address || (r.lat && r.lng); });
 }
 
-async function geocode(address) {
-  try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address + ', New Zealand')}&format=json&limit=1`);
-    const d = await r.json();
-    if (d.length) return { lat: parseFloat(d[0].lat), lng: parseFloat(d[0].lon) };
-  } catch(e) {}
-  return null;
+function geocode(address, cb) {
+  fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(address + ', New Zealand') + '&format=json&limit=1')
+    .then(function(r) { return r.json(); })
+    .then(function(d) { cb(d.length ? { lat: parseFloat(d[0].lat), lng: parseFloat(d[0].lon) } : null); })
+    .catch(function() { cb(null); });
 }
 
 function normaliseMethod(m) {
   if (!m) return 'other';
-  const s = m.toLowerCase().trim();
+  var s = m.toLowerCase();
   if (s.includes('poison') || s.includes('1080') || s.includes('bait')) return 'poison';
   if (s.includes('shoot') || s.includes('shot') || s.includes('gun') || s.includes('arrow')) return 'shooting';
   if (s.includes('run') || s.includes('car') || s.includes('vehicle')) return 'runover';
@@ -101,79 +114,85 @@ function normaliseMethod(m) {
 }
 
 function makeIcon(method) {
-  const c = METHODS[method]?.color || '#555';
+  var c = (METHODS[method] || METHODS.other).color;
   return L.divIcon({
     className: '',
-    html: `<div style="width:14px;height:14px;border-radius:50%;background:${c};border:2px solid rgba(255,255,255,0.9);box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>`,
+    html: '<div style="width:14px;height:14px;border-radius:50%;background:' + c + ';border:2px solid rgba(255,255,255,0.9);box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>',
     iconSize: [14,14], iconAnchor: [7,7]
   });
 }
 
 function renderStats(data) {
-  const counts = {};
-  data.forEach(d => { counts[d.method] = (counts[d.method]||0)+1; });
+  var counts = {};
+  data.forEach(function(d) { counts[d.method] = (counts[d.method]||0)+1; });
   document.getElementById('stat-bar').innerHTML =
-    `<div class="stat"><span>${data.length}</span><label>Total reports</label></div>` +
-    Object.entries(counts).map(([m,n]) =>
-      `<div class="stat"><span style="color:${METHODS[m]?.color}">${n}</span><label>${METHODS[m]?.label||m}</label></div>`
-    ).join('');
-}
-
-function renderFilters(data) {
-  const used = [...new Set(data.map(d => d.method))];
-  const el = document.getElementById('controls');
-  el.innerHTML = ['all', ...used].map(m =>
-    `<button class="filter-btn ${m==='all'?'active':''}" data-method="${m}">${m==='all'?'All':METHODS[m]?.label||m}</button>`
-  ).join('');
-  el.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      el.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const m = btn.dataset.method;
-      renderPins(m === 'all' ? allData : allData.filter(d => d.method === m));
-    });
-  });
+    '<div class="stat"><span>' + data.length + '</span><label>Total reports</label></div>' +
+    Object.entries(counts).map(function(e) {
+      var m = e[0], n = e[1];
+      return '<div class="stat"><span style="color:' + (METHODS[m]||METHODS.other).color + '">' + n + '</span><label>' + (METHODS[m]||{label:m}).label + '</label></div>';
+    }).join('');
 }
 
 function renderPins(data) {
   renderStats(data);
   clusterGroup.clearLayers();
-  data.forEach(d => {
-    const marker = L.marker([d.lat, d.lng], { icon: makeIcon(d.method) });
-    marker.bindPopup(`
-      <b style="color:${METHODS[d.method]?.color}">${METHODS[d.method]?.label||d.method}</b><br>
-      <b>${(d.animal_type||'Unknown').charAt(0).toUpperCase()+(d.animal_type||'').slice(1)}</b> · ${d.date||''}<br>
-      <span style="color:#888;font-size:12px">${d.address||d.suburb||''}</span>
-      ${d.description ? `<p style="margin:6px 0 0;font-size:13px">${d.description}</p>` : ''}
-    `);
+  data.forEach(function(d) {
+    var marker = L.marker([d.lat, d.lng], { icon: makeIcon(d.method) });
+    var animal = d.animal_type ? d.animal_type.charAt(0).toUpperCase() + d.animal_type.slice(1) : 'Unknown';
+    marker.bindPopup(
+      '<b style="color:' + (METHODS[d.method]||METHODS.other).color + '">' + (METHODS[d.method]||{label:d.method}).label + '</b><br>' +
+      '<b>' + animal + '</b> · ' + (d.date||'') + '<br>' +
+      '<span style="color:#888;font-size:12px">' + (d.address||d.suburb||'') + '</span>' +
+      (d.description ? '<p style="margin:6px 0 0;font-size:13px">' + d.description + '</p>' : '')
+    );
     clusterGroup.addLayer(marker);
   });
 }
 
+function renderFilters(data) {
+  var used = [...new Set(data.map(function(d) { return d.method; }))];
+  var el = document.getElementById('controls');
+  el.innerHTML = ['all'].concat(used).map(function(m) {
+    return '<button class="filter-btn ' + (m==='all'?'active':'') + '" data-method="' + m + '">' + (m==='all'?'All':(METHODS[m]||{label:m}).label) + '</button>';
+  }).join('');
+  el.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      el.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var m = btn.dataset.method;
+      renderPins(m === 'all' ? allData : allData.filter(function(d) { return d.method === m; }));
+    });
+  });
+}
+
 async function loadSheet() {
-  const status = document.getElementById('status');
+  var status = document.getElementById('status');
   try {
-    const r = await fetch(CSV_URL);
+    var r = await fetch(CSV_URL);
     if (!r.ok) throw new Error('Sheet not accessible');
-    const text = await r.text();
-    const rows = parseCSV(text);
+    var text = await r.text();
+    var rows = parseCSV(text);
     if (rows.length === 0) {
       status.textContent = 'No reports yet — add data to your Google Sheet to see pins appear.';
       return;
     }
-    status.textContent = `Geocoding ${rows.length} report(s)...`;
-    const resolved = [];
-    for (const row of rows) {
-      let lat = parseFloat(row.lat), lng = parseFloat(row.lng);
+    status.textContent = 'Geocoding ' + rows.length + ' report(s)...';
+    var resolved = [];
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var lat = parseFloat(row.lat), lng = parseFloat(row.lng);
       if (!lat || !lng) {
-        const geo = await geocode(row.address || `${row.suburb}, ${row.region}`);
-        if (geo) { lat = geo.lat; lng = geo.lng; }
-        else continue;
+        await new Promise(function(resolve) {
+          geocode(row.address || (row.suburb + ', ' + row.region), function(geo) {
+            if (geo) { lat = geo.lat; lng = geo.lng; }
+            resolve();
+          });
+        });
       }
-      resolved.push({ ...row, lat, lng, method: normaliseMethod(row.method) });
+      if (lat && lng) resolved.push(Object.assign({}, row, { lat: lat, lng: lng, method: normaliseMethod(row.method) }));
     }
     allData = resolved;
-    status.textContent = `${allData.length} report(s) loaded. Last updated: ${new Date().toLocaleTimeString()}.`;
+    status.textContent = allData.length + ' report(s) loaded. Last updated: ' + new Date().toLocaleTimeString();
     renderFilters(allData);
     renderPins(allData);
   } catch(e) {
@@ -181,24 +200,6 @@ async function loadSheet() {
     console.error(e);
   }
 }
-
-const map = L.map('map', { center: [-41.3, 172.5], zoom: 6 });
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-const legend = L.control({ position: 'bottomright' });
-legend.onAdd = () => {
-  const d = L.DomUtil.create('div', 'legend');
-  d.innerHTML = Object.entries(METHODS).map(([,v]) =>
-    `<div class="legend-row"><span class="dot" style="background:${v.color}"></span>${v.label}</div>`
-  ).join('');
-  return d;
-};
-legend.addTo(map);
-
-clusterGroup = L.markerClusterGroup({ maxClusterRadius: 40 });
-map.addLayer(clusterGroup);  
 
 loadSheet();
 </script>
