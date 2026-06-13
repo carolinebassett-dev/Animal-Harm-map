@@ -16,10 +16,13 @@
       background: #9DBFBF;
       padding: 18px 24px;
       display: flex;
-      align-items: flex-end;
+      align-items: center;
+      justify-content: space-between;
       gap: 16px;
       border-bottom: 4px solid #E5421F;
+      flex-wrap: wrap;
     }
+    .header-text { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
     header h1 {
       font-family: 'Oswald', sans-serif;
       font-size: 32px;
@@ -36,6 +39,20 @@
       letter-spacing: 0.5px;
       padding-bottom: 3px;
     }
+    .report-btn {
+      background: #E5421F;
+      color: #F0EEE8;
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 20px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+    .report-btn:hover { background: #c23311; }
 
     #controls {
       padding: 12px 24px;
@@ -119,10 +136,11 @@
 <body>
 
 <header>
-  <div>
+  <div class="header-text">
     <h1>NZ <span>Animal</span> Harm Map</h1>
+    <p>Community-reported incidents of intentional animal harm in Aotearoa</p>
   </div>
-  <p>Community-reported incidents of intentional animal harm in Aotearoa</p>
+  <a href="submit.html" class="report-btn">+ Report an incident</a>
 </header>
 <div id="controls"></div>
 <div id="stat-bar"></div>
