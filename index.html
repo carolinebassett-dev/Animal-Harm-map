@@ -10,31 +10,122 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: sans-serif; background: #f9f9f7; color: #222; }
-    header { padding: 14px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; }
-    header h1 { font-size: 17px; font-weight: 600; }
-    header p { font-size: 13px; color: #666; margin-top: 2px; }
-    #controls { padding: 12px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; display: flex; flex-wrap: wrap; gap: 8px; }
-    .filter-btn { font-size: 13px; padding: 5px 14px; border-radius: 20px; border: 1px solid #ddd; background: #fff; color: #555; cursor: pointer; }
-    .filter-btn.active { background: #222; color: #fff; border-color: #222; }
-    #stat-bar { padding: 10px 20px; background: #f2f2f0; display: flex; flex-wrap: wrap; gap: 10px; }
-    .stat { background: #fff; border-radius: 8px; padding: 7px 14px; border: 1px solid #e5e5e5; }
-    .stat span { font-size: 18px; font-weight: 600; display: block; }
-    .stat label { color: #888; font-size: 12px; }
-    #status { padding: 6px 20px; font-size: 12px; color: #888; background: #f9f9f7; }
-    #map { width: 100%; height: calc(100vh - 200px); min-height: 400px; }
-    .legend { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 2; }
-    .legend-row { display: flex; align-items: center; gap: 8px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    body { font-family: 'Inter', sans-serif; background: #F5F3EE; color: #1B3A2D; }
+
+    header {
+      background: #1B3A2D;
+      padding: 18px 24px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      border-bottom: 4px solid #E8440A;
+    }
+    header h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: #F5F3EE;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    header h1 span { color: #E8440A; }
+    header p {
+      font-size: 12px;
+      color: #a8c4b0;
+      letter-spacing: 0.5px;
+      padding-bottom: 3px;
+    }
+
+    #controls {
+      padding: 12px 24px;
+      background: #1B3A2D;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .filter-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 2px;
+      border: 1px solid #a8c4b0;
+      background: transparent;
+      color: #a8c4b0;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.15s;
+    }
+    .filter-btn.active {
+      background: #E8440A;
+      color: #F5F3EE;
+      border-color: #E8440A;
+    }
+    .filter-btn:hover:not(.active) {
+      border-color: #F5F3EE;
+      color: #F5F3EE;
+    }
+
+    #stat-bar {
+      padding: 12px 24px;
+      background: #F5F3EE;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-bottom: 1px solid #d8d4cc;
+    }
+    .stat {
+      background: #fff;
+      border-radius: 2px;
+      padding: 8px 16px;
+      border-left: 3px solid #1B6CA8;
+    }
+    .stat span {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      display: block;
+      color: #1B3A2D;
+    }
+    .stat label { color: #6b7c72; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat.alert { border-left-color: #E8440A; }
+    .stat.alert span { color: #E8440A; }
+
+    #status {
+      padding: 5px 24px;
+      font-size: 11px;
+      color: #8a9990;
+      background: #F5F3EE;
+      letter-spacing: 0.3px;
+    }
+
+    #map { width: 100%; height: calc(100vh - 210px); min-height: 400px; }
+
+    .legend {
+      background: #1B3A2D;
+      border: none;
+      border-radius: 2px;
+      padding: 10px 14px;
+      font-size: 12px;
+      line-height: 2;
+    }
+    .legend-row { display: flex; align-items: center; gap: 8px; color: #F5F3EE; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>NZ Animal Harm Map</h1>
-  <p>Community-reported incidents of intentional animal harm in New Zealand</p>
+  <div>
+    <h1>NZ <span>Animal</span> Harm Map</h1>
+  </div>
+  <p>Community-reported incidents of intentional animal harm in Aotearoa</p>
 </header>
 <div id="controls"></div>
 <div id="stat-bar"></div>
@@ -51,7 +142,7 @@ const METHODS = {
   poison:   { color: '#1a1a1a', label: 'Poison' },
   shooting: { color: '#cc2200', label: 'Shooting' },
   runover:  { color: '#888888', label: 'Run over' },
-  drowning: { color: '#5ba8d4', label: 'Drowning' },
+  drowning: { color: '#1B6CA8', label: 'Drowning' },
   beating:  { color: '#8B4513', label: 'Beating' },
   other:    { color: '#9b59b6', label: 'Other' }
 };
@@ -122,7 +213,7 @@ function renderStats(data) {
   var counts = {};
   data.forEach(function(d) { counts[d.method] = (counts[d.method]||0)+1; });
   document.getElementById('stat-bar').innerHTML =
-    '<div class="stat"><span>' + data.length + '</span><label>Total reports</label></div>' +
+    '<div class="stat alert"><span>' + data.length + '</span><label>Total reports</label></div>' +
     Object.entries(counts).map(function(e) {
       return '<div class="stat"><span style="color:' + (METHODS[e[0]]||METHODS.other).color + '">' + e[1] + '</span><label>' + (METHODS[e[0]]||{label:e[0]}).label + '</label></div>';
     }).join('');
