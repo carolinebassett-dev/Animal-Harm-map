@@ -10,15 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #F0EEE8; color: #6B7A5E; }
+    body { font-family: 'Inter', sans-serif; background: #F0EEE8; color: #9DBFBF; }
 
     header {
-      background: #6B7A5E;
+      background: #9DBFBF;
       padding: 18px 24px;
       display: flex;
       align-items: flex-end;
       gap: 16px;
-      border-bottom: 4px solid #C4622D;
+      border-bottom: 4px solid #E5421F;
     }
     header h1 {
       font-family: 'Oswald', sans-serif;
@@ -29,17 +29,17 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-    header h1 span { color: #C4622D; }
+    header h1 span { color: #E5421F; }
     header p {
       font-size: 12px;
-      color: #c8d4c0;
+      color: #3e5454;
       letter-spacing: 0.5px;
       padding-bottom: 3px;
     }
 
     #controls {
       padding: 12px 24px;
-      background: #6B7A5E;
+      background: #9DBFBF;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -51,18 +51,18 @@
       font-weight: 500;
       padding: 5px 14px;
       border-radius: 2px;
-      border: 1px solid #c8d4c0;
+      border: 1px solid #3e5454;
       background: transparent;
-      color: #c8d4c0;
+      color: #3e5454;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       transition: all 0.15s;
     }
     .filter-btn.active {
-      background: #C4622D;
+      background: #E5421F;
       color: #F0EEE8;
-      border-color: #C4622D;
+      border-color: #E5421F;
     }
     .filter-btn:hover:not(.active) {
       border-color: #F0EEE8;
@@ -81,18 +81,18 @@
       background: #fff;
       border-radius: 2px;
       padding: 8px 16px;
-      border-left: 3px solid #3D6B8A;
+      border-left: 3px solid #4A6E7E;
     }
     .stat span {
       font-family: 'Oswald', sans-serif;
       font-size: 22px;
       font-weight: 700;
       display: block;
-      color: #3D6B8A;
+      color: #4A6E7E;
     }
     .stat label { color: #8a9a8a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat.alert { border-left-color: #C4622D; }
-    .stat.alert span { color: #C4622D; }
+    .stat.alert { border-left-color: #E5421F; }
+    .stat.alert span { color: #E5421F; }
 
     #status {
       padding: 5px 24px;
@@ -105,7 +105,7 @@
     #map { width: 100%; height: calc(100vh - 210px); min-height: 400px; }
 
     .legend {
-      background: #6B7A5E;
+      background: #9DBFBF;
       border: none;
       border-radius: 2px;
       padding: 10px 14px;
@@ -139,7 +139,7 @@ const METHODS = {
   poison:   { color: '#2a2a2a', label: 'Poison' },
   shooting: { color: '#cc2200', label: 'Shooting' },
   runover:  { color: '#888888', label: 'Run over' },
-  drowning: { color: '#3D6B8A', label: 'Drowning' },
+  drowning: { color: '#4A6E7E', label: 'Drowning' },
   beating:  { color: '#8B4513', label: 'Beating' },
   other:    { color: '#9b59b6', label: 'Other' }
 };
