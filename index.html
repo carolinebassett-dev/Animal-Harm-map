@@ -13,10 +13,10 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #F5F3EE; color: #1B3A2D; }
+    body { font-family: 'Inter', sans-serif; background: #F0EEE8; color: #6B7A5E; }
 
     header {
-      background: #1B3A2D;
+      background: #6B7A5E;
       padding: 18px 24px;
       display: flex;
       align-items: flex-end;
@@ -27,7 +27,7 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
       font-family: 'Oswald', sans-serif;
       font-size: 32px;
       font-weight: 700;
-      color: #F5F3EE;
+      color: #F0EEE8;
       line-height: 1;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -35,14 +35,14 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
     header h1 span { color: #E8440A; }
     header p {
       font-size: 12px;
-      color: #a8c4b0;
+      color: #c8d4c0;
       letter-spacing: 0.5px;
       padding-bottom: 3px;
     }
 
     #controls {
       padding: 12px 24px;
-      background: #1B3A2D;
+      background: #6B7A5E;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -54,9 +54,9 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
       font-weight: 500;
       padding: 5px 14px;
       border-radius: 2px;
-      border: 1px solid #a8c4b0;
+      border: 1px solid #c8d4c0;
       background: transparent;
-      color: #a8c4b0;
+      color: #c8d4c0;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -64,58 +64,58 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
     }
     .filter-btn.active {
       background: #E8440A;
-      color: #F5F3EE;
+      color: #F0EEE8;
       border-color: #E8440A;
     }
     .filter-btn:hover:not(.active) {
-      border-color: #F5F3EE;
-      color: #F5F3EE;
+      border-color: #F0EEE8;
+      color: #F0EEE8;
     }
 
     #stat-bar {
       padding: 12px 24px;
-      background: #F5F3EE;
+      background: #F0EEE8;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      border-bottom: 1px solid #d8d4cc;
+      border-bottom: 1px solid #d4d0c8;
     }
     .stat {
       background: #fff;
       border-radius: 2px;
       padding: 8px 16px;
-      border-left: 3px solid #1B6CA8;
+      border-left: 3px solid #4A5E6E;
     }
     .stat span {
       font-family: 'Oswald', sans-serif;
       font-size: 22px;
       font-weight: 700;
       display: block;
-      color: #1B3A2D;
+      color: #4A5E6E;
     }
-    .stat label { color: #6b7c72; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat label { color: #8a9a8a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
     .stat.alert { border-left-color: #E8440A; }
     .stat.alert span { color: #E8440A; }
 
     #status {
       padding: 5px 24px;
       font-size: 11px;
-      color: #8a9990;
-      background: #F5F3EE;
+      color: #9aaa9a;
+      background: #F0EEE8;
       letter-spacing: 0.3px;
     }
 
     #map { width: 100%; height: calc(100vh - 210px); min-height: 400px; }
 
     .legend {
-      background: #1B3A2D;
+      background: #6B7A5E;
       border: none;
       border-radius: 2px;
       padding: 10px 14px;
       font-size: 12px;
       line-height: 2;
     }
-    .legend-row { display: flex; align-items: center; gap: 8px; color: #F5F3EE; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
+    .legend-row { display: flex; align-items: center; gap: 8px; color: #F0EEE8; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
     .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
   </style>
 </head>
@@ -139,10 +139,10 @@ const SHEET_ID = '1xrwxrhoQRIShSz1SHsbrtnX4AA_cblp9_fja8yXDHNY';
 const JSON_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Sheet1';
 
 const METHODS = {
-  poison:   { color: '#1a1a1a', label: 'Poison' },
+  poison:   { color: '#2a2a2a', label: 'Poison' },
   shooting: { color: '#cc2200', label: 'Shooting' },
   runover:  { color: '#888888', label: 'Run over' },
-  drowning: { color: '#1B6CA8', label: 'Drowning' },
+  drowning: { color: '#4A5E6E', label: 'Drowning' },
   beating:  { color: '#8B4513', label: 'Beating' },
   other:    { color: '#9b59b6', label: 'Other' }
 };
