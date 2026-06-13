@@ -45,7 +45,7 @@ cat > /mnt/user-data/outputs/index.html << 'EOF'
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 const SHEET_ID = '1xrwxrhoQRIShSz1SHsbrtnX4AA_cblp9_fja8yXDHNY';
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/export?format=csv&gid=0';
+const JSON_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Sheet1';
 
 const METHODS = {
   poison:   { color: '#1a1a1a', label: 'Poison' },
@@ -67,8 +67,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var legend = L.control({ position: 'bottomright' });
 legend.onAdd = function() {
   var d = L.DomUtil.create('div', 'legend');
-  d.innerHTML = Object.entries(METHODS).map(function(entry) {
-    return '<div class="legend-row"><span class="dot" style="background:' + entry[1].color + '"></span>' + entry[1].label + '</div>';
+  d.innerHTML = Object.entries(METHODS).map(function(e) {
+    return '<div class="legend-row"><span class="dot" style="background:' + e[1].color + '"></span>' + e[1].label + '</div>';
   }).join('');
   return d;
 };
@@ -77,26 +77,22 @@ legend.addTo(leafletMap);
 clusterGroup = L.markerClusterGroup({ maxClusterRadius: 40 });
 leafletMap.addLayer(clusterGroup);
 
-function parseCSV(text) {
-  var lines = text.trim().split('\n');
-  var headers = lines[0].split(',').map(function(h) { return h.trim().replace(/^"|"$/g, '').toLowerCase(); });
-  return lines.slice(1).map(function(line) {
-    var vals = [], cur = '', inQ = false;
-    for (var i = 0; i < line.length; i++) {
-      var c = line[i];
-      if (c === '"') inQ = !inQ;
-      else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
-      else cur += c;
-    }
-    vals.push(cur.trim());
-    var row = {};
-    headers.forEach(function(h, i) { row[h] = (vals[i] || '').replace(/^"|"$/g, ''); });
-    return row;
-  }).filter(function(r) { return r.address || (r.lat && r.lng); });
+function parseGviz(text) {
+  var json = JSON.parse(text.replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
+  var cols = json.table.cols.map(function(c) { return c.label.toLowerCase().trim(); });
+  return json.table.rows.map(function(row) {
+    var obj = {};
+    cols.forEach(function(col, i) {
+      var cell = row.c[i];
+      obj[col] = cell && cell.v !== null ? String(cell.v) : '';
+    });
+    return obj;
+  }).filter(function(r) { return r.id || r.address || r.suburb; });
 }
 
 function geocode(address, cb) {
-  fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(address + ', New Zealand') + '&format=json&limit=1')
+  var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(address + ', New Zealand') + '&format=json&limit=1';
+  fetch(url)
     .then(function(r) { return r.json(); })
     .then(function(d) { cb(d.length ? { lat: parseFloat(d[0].lat), lng: parseFloat(d[0].lon) } : null); })
     .catch(function() { cb(null); });
@@ -128,8 +124,7 @@ function renderStats(data) {
   document.getElementById('stat-bar').innerHTML =
     '<div class="stat"><span>' + data.length + '</span><label>Total reports</label></div>' +
     Object.entries(counts).map(function(e) {
-      var m = e[0], n = e[1];
-      return '<div class="stat"><span style="color:' + (METHODS[m]||METHODS.other).color + '">' + n + '</span><label>' + (METHODS[m]||{label:m}).label + '</label></div>';
+      return '<div class="stat"><span style="color:' + (METHODS[e[0]]||METHODS.other).color + '">' + e[1] + '</span><label>' + (METHODS[e[0]]||{label:e[0]}).label + '</label></div>';
     }).join('');
 }
 
@@ -142,7 +137,7 @@ function renderPins(data) {
     marker.bindPopup(
       '<b style="color:' + (METHODS[d.method]||METHODS.other).color + '">' + (METHODS[d.method]||{label:d.method}).label + '</b><br>' +
       '<b>' + animal + '</b> · ' + (d.date||'') + '<br>' +
-      '<span style="color:#888;font-size:12px">' + (d.address||d.suburb||'') + '</span>' +
+      '<span style="color:#888;font-size:12px">' + (d.address||d.suburb||'') + (d.region ? ', ' + d.region : '') + '</span>' +
       (d.description ? '<p style="margin:6px 0 0;font-size:13px">' + d.description + '</p>' : '')
     );
     clusterGroup.addLayer(marker);
@@ -168,10 +163,10 @@ function renderFilters(data) {
 async function loadSheet() {
   var status = document.getElementById('status');
   try {
-    var r = await fetch(CSV_URL);
+    var r = await fetch(JSON_URL);
     if (!r.ok) throw new Error('Sheet not accessible');
     var text = await r.text();
-    var rows = parseCSV(text);
+    var rows = parseGviz(text);
     if (rows.length === 0) {
       status.textContent = 'No reports yet — add data to your Google Sheet to see pins appear.';
       return;
@@ -182,17 +177,22 @@ async function loadSheet() {
       var row = rows[i];
       var lat = parseFloat(row.lat), lng = parseFloat(row.lng);
       if (!lat || !lng) {
-        await new Promise(function(resolve) {
-          geocode(row.address || (row.suburb + ', ' + row.region), function(geo) {
-            if (geo) { lat = geo.lat; lng = geo.lng; }
-            resolve();
+        var query = row.address || (row.suburb && row.region ? row.suburb + ', ' + row.region : row.suburb || row.region || '');
+        if (query) {
+          await new Promise(function(resolve) {
+            geocode(query, function(geo) {
+              if (geo) { lat = geo.lat; lng = geo.lng; }
+              resolve();
+            });
           });
-        });
+        }
       }
-      if (lat && lng) resolved.push(Object.assign({}, row, { lat: lat, lng: lng, method: normaliseMethod(row.method) }));
+      if (lat && lng) {
+        resolved.push(Object.assign({}, row, { lat: lat, lng: lng, method: normaliseMethod(row.method) }));
+      }
     }
     allData = resolved;
-    status.textContent = allData.length + ' report(s) loaded. Last updated: ' + new Date().toLocaleTimeString();
+    status.textContent = allData.length + ' of ' + rows.length + ' report(s) loaded. Last updated: ' + new Date().toLocaleTimeString();
     renderFilters(allData);
     renderPins(allData);
   } catch(e) {
