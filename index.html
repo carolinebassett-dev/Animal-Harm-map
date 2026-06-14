@@ -154,12 +154,17 @@ const SHEET_ID = '1xrwxrhoQRIShSz1SHsbrtnX4AA_cblp9_fja8yXDHNY';
 const JSON_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Sheet1';
 
 const METHODS = {
-  poison:   { color: '#2a2a2a', label: 'Poison' },
-  shooting: { color: '#cc2200', label: 'Shooting' },
-  runover:  { color: '#888888', label: 'Run over' },
-  drowning: { color: '#4A6E7E', label: 'Drowning' },
-  beating:  { color: '#8B4513', label: 'Beating' },
-  other:    { color: '#9b59b6', label: 'Other' }
+  shot:     { color: '#C0392B', label: 'Shot' },
+  beaten:   { color: '#8B5A2B', label: 'Beaten' },
+  trapped:  { color: '#B8860B', label: 'Trapped' },
+  drowned:  { color: '#2E6E8E', label: 'Drowned' },
+  burnt:    { color: '#E67E22', label: 'Burnt' },
+  rundown:  { color: '#7F8C8D', label: 'Run down' },
+  hung:     { color: '#5D4E8C', label: 'Hung' },
+  mauled:   { color: '#9B2D6B', label: 'Mauled' },
+  stolen:   { color: '#2E8B57', label: 'Stolen' },
+  poison:   { color: '#1a1a1a', label: 'Poison' },
+  other:    { color: '#566573', label: 'Other' }
 };
 
 var allData = [];
@@ -175,7 +180,11 @@ legend.onAdd = function() {
   var d = L.DomUtil.create('div', 'legend');
   d.innerHTML = Object.entries(METHODS).map(function(e) {
     return '<div class="legend-row"><span class="dot" style="background:' + e[1].color + '"></span>' + e[1].label + '</div>';
-  }).join('');
+  }).join('')
+  + '<div style="border-top:1px solid rgba(255,255,255,0.25);margin-top:8px;padding-top:8px">'
+  + '<div class="legend-row"><span class="dot" style="background:#566573"></span>Deceased</div>'
+  + '<div class="legend-row"><span class="dot" style="background:rgba(255,255,255,0.9);border:3px solid #566573;box-sizing:border-box"></span>Survived</div>'
+  + '</div>';
   return d;
 };
 legend.addTo(leafletMap);
@@ -200,20 +209,37 @@ function normaliseMethod(m) {
   if (!m) return 'other';
   var s = m.toLowerCase();
   if (s.includes('poison') || s.includes('1080') || s.includes('bait')) return 'poison';
-  if (s.includes('shoot') || s.includes('shot') || s.includes('gun') || s.includes('arrow')) return 'shooting';
-  if (s.includes('run') || s.includes('car') || s.includes('vehicle')) return 'runover';
-  if (s.includes('drown')) return 'drowning';
-  if (s.includes('beat') || s.includes('hit') || s.includes('stab') || s.includes('kick')) return 'beating';
+  if (s.includes('shot') || s.includes('shoot') || s.includes('gun') || s.includes('arrow')) return 'shot';
+  if (s.includes('trap')) return 'trapped';
+  if (s.includes('drown')) return 'drowned';
+  if (s.includes('burn') || s.includes('burnt') || s.includes('fire')) return 'burnt';
+  if (s.includes('run') || s.includes('car') || s.includes('vehicle')) return 'rundown';
+  if (s.includes('hung') || s.includes('hang') || s.includes('hanged')) return 'hung';
+  if (s.includes('maul') || s.includes('dog attack') || s.includes('attacked')) return 'mauled';
+  if (s.includes('stol') || s.includes('steal') || s.includes('taken') || s.includes('theft')) return 'stolen';
+  if (s.includes('beat') || s.includes('hit') || s.includes('stab') || s.includes('kick')) return 'beaten';
   return 'other';
 }
 
-function makeIcon(method) {
+function normaliseStatus(s) {
+  if (!s) return '';
+  var t = s.toLowerCase();
+  if (t.includes('surviv') || t.includes('alive')) return 'survived';
+  if (t.includes('decease') || t.includes('dead') || t.includes('died') || t.includes('killed')) return 'deceased';
+  return '';
+}
+
+function makeIcon(method, status) {
   var c = (METHODS[method] || METHODS.other).color;
-  return L.divIcon({
-    className: '',
-    html: '<div style="width:14px;height:14px;border-radius:50%;background:' + c + ';border:2px solid rgba(255,255,255,0.9);box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>',
-    iconSize: [14,14], iconAnchor: [7,7]
-  });
+  var inner;
+  if (status === 'survived') {
+    // hollow ring = the animal survived
+    inner = '<div style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.9);border:3px solid ' + c + ';box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>';
+  } else {
+    // solid dot = deceased (or unknown)
+    inner = '<div style="width:14px;height:14px;border-radius:50%;background:' + c + ';border:2px solid rgba(255,255,255,0.9);box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>';
+  }
+  return L.divIcon({ className: '', html: inner, iconSize: [14,14], iconAnchor: [7,7] });
 }
 
 function renderStats(data) {
@@ -230,10 +256,17 @@ function renderPins(data) {
   renderStats(data);
   clusterGroup.clearLayers();
   data.forEach(function(d) {
-    var marker = L.marker([d.lat, d.lng], { icon: makeIcon(d.method) });
+    var marker = L.marker([d.lat, d.lng], { icon: makeIcon(d.method, d.statusKey) });
     var animal = d.animal_type ? d.animal_type.charAt(0).toUpperCase() + d.animal_type.slice(1) : 'Unknown';
+    var statusLine = '';
+    if (d.statusKey === 'survived') {
+      statusLine = '<span style="color:#2E8B57;font-size:12px;font-weight:bold">● Survived</span><br>';
+    } else if (d.statusKey === 'deceased') {
+      statusLine = '<span style="color:#C0392B;font-size:12px;font-weight:bold">● Deceased</span><br>';
+    }
     marker.bindPopup(
       '<b style="color:' + (METHODS[d.method]||METHODS.other).color + '">' + (METHODS[d.method]||{label:d.method}).label + '</b><br>' +
+      statusLine +
       '<b>' + animal + '</b> · ' + (d.date||'') + '<br>' +
       '<span style="color:#888;font-size:12px">' + (d.address||d.suburb||'') + (d.region ? ', ' + d.region : '') + '</span>' +
       (d.description ? '<p style="margin:6px 0 0;font-size:13px">' + d.description + '</p>' : '')
@@ -274,7 +307,7 @@ async function loadSheet() {
       var row = rows[i];
       var lat = parseFloat(row.lat), lng = parseFloat(row.lng);
       if (lat && lng) {
-        resolved.push(Object.assign({}, row, { lat: lat, lng: lng, method: normaliseMethod(row.method) }));
+        resolved.push(Object.assign({}, row, { lat: lat, lng: lng, method: normaliseMethod(row.method), statusKey: normaliseStatus(row.status) }));
       }
     }
     allData = resolved;
