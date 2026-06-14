@@ -196,14 +196,6 @@ function parseGviz(text) {
   }).filter(function(r) { return r.id || r.address || r.suburb; });
 }
 
-function geocode(address, cb) {
-  var url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(address + ', New Zealand') + '&format=json&limit=1';
-  fetch(url)
-    .then(function(r) { return r.json(); })
-    .then(function(d) { cb(d.length ? { lat: parseFloat(d[0].lat), lng: parseFloat(d[0].lon) } : null); })
-    .catch(function() { cb(null); });
-}
-
 function normaliseMethod(m) {
   if (!m) return 'other';
   var s = m.toLowerCase();
@@ -277,28 +269,19 @@ async function loadSheet() {
       status.textContent = 'No reports yet — add data to your Google Sheet to see pins appear.';
       return;
     }
-    status.textContent = 'Geocoding ' + rows.length + ' report(s)...';
     var resolved = [];
     for (var i = 0; i < rows.length; i++) {
       var row = rows[i];
       var lat = parseFloat(row.lat), lng = parseFloat(row.lng);
-      if (!lat || !lng) {
-        var query = row.address || (row.suburb && row.region ? row.suburb + ', ' + row.region : row.suburb || row.region || '');
-        if (query) {
-          await new Promise(function(resolve) {
-            geocode(query, function(geo) {
-              if (geo) { lat = geo.lat; lng = geo.lng; }
-              resolve();
-            });
-          });
-        }
-      }
       if (lat && lng) {
         resolved.push(Object.assign({}, row, { lat: lat, lng: lng, method: normaliseMethod(row.method) }));
       }
     }
     allData = resolved;
-    status.textContent = allData.length + ' of ' + rows.length + ' report(s) loaded. Last updated: ' + new Date().toLocaleTimeString();
+    var skipped = rows.length - allData.length;
+    status.textContent = allData.length + ' report(s) loaded'
+      + (skipped > 0 ? ' (' + skipped + ' awaiting coordinates)' : '')
+      + '. Last updated: ' + new Date().toLocaleTimeString();
     renderFilters(allData);
     renderPins(allData);
   } catch(e) {
