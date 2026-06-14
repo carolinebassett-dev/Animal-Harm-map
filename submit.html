@@ -38,88 +38,66 @@
     }
     .back-link:hover { background: #F0EEE8; color: #9DBFBF; }
 
-    .wrap { max-width: 640px; margin: 0 auto; padding: 32px 24px 60px; }
+    .wrap { max-width: 620px; margin: 0 auto; padding: 48px 24px 60px; }
     .intro {
       font-family: 'Oswald', sans-serif;
-      font-size: 22px;
+      font-size: 30px;
       font-weight: 500;
       color: #4A6E7E;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 14px;
+      line-height: 1.1;
     }
-    .intro-sub { font-size: 14px; color: #8a8a82; margin-bottom: 28px; line-height: 1.6; }
+    .intro-sub { font-size: 16px; color: #6a6a62; margin-bottom: 32px; line-height: 1.65; }
 
-    .field { margin-bottom: 20px; }
-    .field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #4A6E7E;
-      margin-bottom: 6px;
-    }
-    .field label .req { color: #E5421F; }
-    .field input, .field select, .field textarea {
-      width: 100%;
-      padding: 11px 13px;
-      border: 1px solid #d4d0c8;
-      border-radius: 2px;
+    .card {
       background: #fff;
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      color: #4a4a44;
+      border-radius: 4px;
+      border-left: 4px solid #9DBFBF;
+      padding: 24px 26px;
+      margin-bottom: 28px;
     }
-    .field input:focus, .field select:focus, .field textarea:focus {
-      outline: none;
-      border-color: #9DBFBF;
-      box-shadow: 0 0 0 2px rgba(74,110,126,0.18);
-    }
-    .field textarea { min-height: 90px; resize: vertical; }
-    .field .hint { font-size: 12px; color: #a0a098; margin-top: 4px; }
-
-    .row { display: flex; gap: 14px; }
-    .row .field { flex: 1; }
-
-    .submit-btn {
-      width: 100%;
-      padding: 14px;
-      background: #E5421F;
-      color: #F0EEE8;
-      border: none;
-      border-radius: 2px;
+    .card h2 {
       font-family: 'Oswald', sans-serif;
       font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #4A6E7E;
+      margin-bottom: 14px;
+    }
+    .card ul { list-style: none; }
+    .card li {
+      font-size: 14px;
+      color: #5a5a52;
+      line-height: 1.5;
+      padding: 6px 0 6px 22px;
+      position: relative;
+    }
+    .card li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 13px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #E5421F;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: #E5421F;
+      color: #F0EEE8;
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      font-size: 18px;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 1px;
-      cursor: pointer;
-      margin-top: 8px;
+      padding: 16px 34px;
+      border-radius: 3px;
     }
-    .submit-btn:hover { background: #c23311; }
-    .submit-btn:disabled { background: #c0bcb4; cursor: not-allowed; }
-
-    .note {
-      background: #e8e4da;
-      border-left: 3px solid #9DBFBF;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #6a6a62;
-      line-height: 1.6;
-      margin-bottom: 28px;
-      border-radius: 2px;
-    }
-
-    #message {
-      padding: 14px 16px;
-      border-radius: 2px;
-      font-size: 14px;
-      margin-top: 16px;
-      display: none;
-    }
-    #message.success { background: #dde8d4; color: #4a6b3a; border-left: 3px solid #9DBFBF; display: block; }
-    #message.error { background: #f0dcd4; color: #c23311; border-left: 3px solid #E5421F; display: block; }
+    .cta-btn:hover { background: #c23311; }
+    .cta-note { font-size: 13px; color: #8a8a82; margin-top: 14px; }
   </style>
 </head>
 <body>
@@ -131,128 +109,21 @@
 
 <div class="wrap">
   <div class="intro">Report an incident</div>
-  <p class="intro-sub">Help build the picture of intentional animal harm across Aotearoa. Every report is reviewed before it appears on the map.</p>
+  <p class="intro-sub">Help build the picture of intentional animal harm across Aotearoa. Every report is reviewed before it appears on the map — your contribution helps keep companion animals safe and supports the case for change.</p>
 
-  <div class="note">
-    Reports are checked by a moderator before publishing. Please only submit incidents you believe to be genuine, and include a source link where possible.
+  <div class="card">
+    <h2>Before you submit</h2>
+    <ul>
+      <li>Only submit incidents you genuinely believe to be true.</li>
+      <li>Do not name or identify any individual person — describe the incident, the animal, and the location only.</li>
+      <li>Include a source link where you can, to strengthen the report.</li>
+      <li>Reports are reviewed before publishing and appear as an anonymous, colour-coded pin.</li>
+    </ul>
   </div>
 
-  <div class="field">
-    <label>Date of incident <span class="req">*</span></label>
-    <input type="date" id="date" required />
-  </div>
-
-  <div class="row">
-    <div class="field">
-      <label>Animal type <span class="req">*</span></label>
-      <select id="animal_type" required>
-        <option value="">Select...</option>
-        <option>Cat</option>
-        <option>Dog</option>
-        <option>Chicken</option>
-        <option>Livestock</option>
-        <option>Other</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Method <span class="req">*</span></label>
-      <select id="method" required>
-        <option value="">Select...</option>
-        <option>Poison</option>
-        <option>Shooting</option>
-        <option>Run over</option>
-        <option>Drowning</option>
-        <option>Beating</option>
-        <option>Other</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="field">
-    <label>Street or address</label>
-    <input type="text" id="address" placeholder="e.g. Kingsley Drive" />
-    <div class="hint">Optional — but the more detail, the more accurate the map pin.</div>
-  </div>
-
-  <div class="row">
-    <div class="field">
-      <label>Suburb <span class="req">*</span></label>
-      <input type="text" id="suburb" placeholder="e.g. Flaxmere" required />
-    </div>
-    <div class="field">
-      <label>Region <span class="req">*</span></label>
-      <input type="text" id="region" placeholder="e.g. Hastings" required />
-    </div>
-  </div>
-
-  <div class="field">
-    <label>What happened? <span class="req">*</span></label>
-    <textarea id="description" placeholder="Describe the incident..." required></textarea>
-  </div>
-
-  <div class="field">
-    <label>Source link</label>
-    <input type="url" id="source_url" placeholder="https://..." />
-    <div class="hint">A Facebook post, news article, or other source if you have one.</div>
-  </div>
-
-  <button class="submit-btn" id="submitBtn">Submit report</button>
-  <div id="message"></div>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSdn9ox8AXB_ASKN6p-YzzfYEt4m8IemJES-f3_WYK9fsUH9Xw/viewform" class="cta-btn" target="_blank" rel="noopener">Open the report form →</a>
+  <p class="cta-note">Opens a secure Google Form in a new tab.</p>
 </div>
 
-<script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwN-8s-oevmsgWtToMbta27_aqrmxbA6oFWa44g3UxIPNbslwdkapO07SWOJ-UktjxfpQ/exec';
-
-const btn = document.getElementById('submitBtn');
-const msg = document.getElementById('message');
-
-function showMessage(text, type) {
-  msg.textContent = text;
-  msg.className = type;
-}
-
-btn.addEventListener('click', async function() {
-  const required = ['date', 'animal_type', 'method', 'suburb', 'region', 'description'];
-  for (const id of required) {
-    if (!document.getElementById(id).value.trim()) {
-      showMessage('Please fill in all required fields (marked *).', 'error');
-      return;
-    }
-  }
-
-  const data = {
-    date: document.getElementById('date').value,
-    animal_type: document.getElementById('animal_type').value,
-    method: document.getElementById('method').value,
-    address: document.getElementById('address').value,
-    suburb: document.getElementById('suburb').value,
-    region: document.getElementById('region').value,
-    description: document.getElementById('description').value,
-    source_url: document.getElementById('source_url').value
-  };
-
-  btn.disabled = true;
-  btn.textContent = 'Submitting...';
-
-  try {
-    const formData = new URLSearchParams();
-    Object.keys(data).forEach(function(k) { formData.append(k, data[k]); });
-
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: formData
-    });
-    showMessage('Thank you. Your report has been submitted and will be reviewed before appearing on the map.', 'success');
-    document.querySelectorAll('input, select, textarea').forEach(function(el) { el.value = ''; });
-  } catch(e) {
-    showMessage('Something went wrong submitting your report. Please try again.', 'error');
-    console.error(e);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Submit report';
-  }
-});
-</script>
 </body>
 </html>
