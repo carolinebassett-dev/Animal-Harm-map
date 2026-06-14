@@ -201,7 +201,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwN-8s-oevmsgWtToMbta27_aqrmxbA6oFWa44g3UxIPNbslwdkapO07SWOJ-UktjxfpQ/exec';
 
 const btn = document.getElementById('submitBtn');
 const msg = document.getElementById('message');
@@ -235,11 +235,13 @@ btn.addEventListener('click', async function() {
   btn.textContent = 'Submitting...';
 
   try {
+    const formData = new URLSearchParams();
+    Object.keys(data).forEach(function(k) { formData.append(k, data[k]); });
+
     await fetch(SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(data)
+      body: formData
     });
     showMessage('Thank you. Your report has been submitted and will be reviewed before appearing on the map.', 'success');
     document.querySelectorAll('input, select, textarea').forEach(function(el) { el.value = ''; });
