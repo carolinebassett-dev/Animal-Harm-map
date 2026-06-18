@@ -53,6 +53,20 @@
       white-space: nowrap;
     }
     .report-btn:hover { background: #c23311; }
+    .nav-links { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .nav-link {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #F0EEE8;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 2px;
+    }
+    .nav-link:hover { background: rgba(240,238,232,0.18); }
+    .nav-link.active { color: #3e5454; }
 
     #controls {
       padding: 12px 24px;
@@ -140,7 +154,11 @@
     <h1>NZ <span>Animal</span> Harm Map</h1>
     <p>Community-reported incidents of intentional animal harm in Aotearoa</p>
   </div>
-  <a href="submit.html" class="report-btn">+ Report an incident</a>
+  <nav class="nav-links">
+    <a href="index.html" class="nav-link active">Map</a>
+    <a href="about.html" class="nav-link">About</a>
+    <a href="submit.html" class="report-btn">+ Report an incident</a>
+  </nav>
 </header>
 <div id="controls"></div>
 <div id="stat-bar"></div>
