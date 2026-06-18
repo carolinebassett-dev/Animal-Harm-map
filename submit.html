@@ -26,17 +26,20 @@
       letter-spacing: 1px;
     }
     header h1 span { color: #E5421F; }
-    .back-link {
-      font-size: 12px;
-      color: #3e5454;
-      text-decoration: none;
+    .nav-links { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .nav-link {
+      font-family: 'Oswald', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border: 1px solid #3e5454;
-      padding: 6px 14px;
+      color: #F0EEE8;
+      text-decoration: none;
+      padding: 8px 14px;
       border-radius: 2px;
     }
-    .back-link:hover { background: #F0EEE8; color: #9DBFBF; }
+    .nav-link:hover { background: rgba(240,238,232,0.18); }
+    .nav-link.active { color: #3e5454; }
 
     .wrap { max-width: 620px; margin: 0 auto; padding: 48px 24px 60px; }
     .intro {
@@ -104,7 +107,11 @@
 
 <header>
   <h1>NZ <span>Animal</span> Harm Map</h1>
-  <a href="index.html" class="back-link">← Back to map</a>
+  <nav class="nav-links">
+    <a href="about.html" class="nav-link">About</a>
+    <a href="index.html" class="nav-link">Map</a>
+    <a href="submit.html" class="nav-link active">Report</a>
+  </nav>
 </header>
 
 <div class="wrap">
