@@ -42,10 +42,7 @@
     }
     .nav-link:hover { background: rgba(240,238,232,0.18); }
     .nav-link.active { color: #3e5454; }
-    .nav-link.report {
-      background: #E5421F;
-      color: #F0EEE8;
-    }
+    .nav-link.report { background: #E5421F; color: #F0EEE8; }
     .nav-link.report:hover { background: #c23311; }
 
     .wrap { max-width: 720px; margin: 0 auto; padding: 56px 24px 80px; }
@@ -60,77 +57,85 @@
     }
     h2.title {
       font-family: 'Oswald', sans-serif;
-      font-size: 38px;
+      font-size: 40px;
       font-weight: 700;
       color: #4A6E7E;
       line-height: 1.1;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 28px;
+      margin-bottom: 30px;
     }
 
     .body p {
-      font-size: 16.5px;
-      line-height: 1.75;
+      font-size: 17px;
+      line-height: 1.8;
       color: #4a4a44;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
     .body p.lead {
-      font-size: 19px;
-      line-height: 1.7;
+      font-size: 21px;
+      line-height: 1.6;
       color: #3a3a34;
       font-weight: 500;
     }
     .body strong { color: #4A6E7E; }
 
-    .pull {
-      border-left: 4px solid #E5421F;
-      padding: 6px 0 6px 22px;
-      margin: 32px 0;
+    .tool-note {
+      background: #fff;
+      border-left: 4px solid #9DBFBF;
+      border-radius: 0 4px 4px 0;
+      padding: 22px 26px;
+      margin: 36px 0;
+    }
+    .tool-note p { font-size: 15.5px; line-height: 1.7; color: #5a5a52; margin: 0; }
+
+    .tagline {
       font-family: 'Oswald', sans-serif;
-      font-size: 22px;
-      line-height: 1.4;
-      color: #4A6E7E;
-      text-transform: none;
+      font-size: 24px;
+      font-weight: 500;
+      color: #E5421F;
+      line-height: 1.35;
+      text-align: center;
+      margin: 44px 0;
+      padding: 0 10px;
     }
 
-    .cta-block {
+    .info-cta {
+      display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+      justify-content: space-between;
       background: #9DBFBF;
       border-radius: 6px;
-      padding: 32px 30px;
-      margin-top: 44px;
-      text-align: center;
+      padding: 24px 28px;
+      margin-top: 40px;
     }
-    .cta-block h3 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 22px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #F0EEE8;
-      margin-bottom: 10px;
+    .info-cta div { color: #2e4444; }
+    .info-cta h3 { font-family: 'Oswald', sans-serif; font-size: 19px; text-transform: uppercase; letter-spacing: 0.5px; color: #F0EEE8; margin-bottom: 4px; }
+    .info-cta p { font-size: 14px; }
+    .info-btn {
+      display: inline-block; background: #E5421F; color: #F0EEE8; text-decoration: none;
+      font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.5px; padding: 12px 24px; border-radius: 3px; white-space: nowrap;
     }
-    .cta-block p { color: #2e4444; font-size: 15px; margin-bottom: 20px; }
-    .cta-btn {
-      display: inline-block;
-      background: #E5421F;
-      color: #F0EEE8;
-      text-decoration: none;
-      font-family: 'Oswald', sans-serif;
-      font-size: 17px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 15px 34px;
-      border-radius: 3px;
-    }
-    .cta-btn:hover { background: #c23311; }
+    .info-btn:hover { background: #c23311; }
 
-    footer {
+    .contact {
       text-align: center;
-      padding: 30px 24px;
-      font-size: 13px;
-      color: #8a8a82;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid #d4d0c8;
     }
+    .contact-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+      color: #8a8a82; margin-bottom: 8px;
+    }
+    .contact a {
+      font-family: 'Oswald', sans-serif;
+      font-size: 22px; color: #4A6E7E; text-decoration: none; font-weight: 500;
+    }
+    .contact a:hover { color: #E5421F; }
+
+    footer { text-align: center; padding: 30px 24px; font-size: 13px; color: #8a8a82; }
     footer a { color: #4A6E7E; }
   </style>
 </head>
@@ -141,42 +146,40 @@
   <nav class="nav-links">
     <a href="about.html" class="nav-link active">About</a>
     <a href="index.html" class="nav-link">Map</a>
+    <a href="info.html" class="nav-link">Information</a>
     <a href="submit.html" class="nav-link report">+ Report an incident</a>
   </nav>
 </header>
 
 <div class="wrap">
-  <div class="lede-label">About the project</div>
-  <h2 class="title">Bringing evidence to a conversation that needs it</h2>
+  <div class="lede-label">Our mission</div>
+  <h2 class="title">Standing together for the animals who can't speak for themselves</h2>
 
   <div class="body">
-    <p class="lead">Report Animal Harm exists because of a gap — a definitional gap at the heart of New Zealand's Predator Free 2050 programme.</p>
+    <p class="lead">Report Animal Harm is a place to stand together for the animals who cannot speak for themselves.</p>
 
-    <p>When feral cats were added to the target list, the policy arrived without clear definitions distinguishing feral cats from stray, community, and companion cats, and without clearly defined areas where control is appropriate. Rural New Zealand has long been a hotspot for the abandonment and dumping of animals, and the cats left behind there are now too easily swept up under the same "feral" label.</p>
+    <p>This map belongs to everyone. Whether you're a family wanting to keep your pets safe, a rescue working on the front line, someone who has witnessed cruelty, or someone living with its aftermath — your experience matters here, and you are not alone in it. Every report joins a wider community of people who refuse to look away. <strong>Reports appear on the map anonymously</strong>, so you can contribute safely, without your name attached.</p>
 
-    <p>This map is our response. Data is the most persuasive evidence there is, so we have built an open, public record of where animals are being harmed and killed across Aotearoa. It is free for anyone to view and contribute to.</p>
+    <p>Together, we are building an honest, shared record of harm across Aotearoa — so that no incident goes unseen, no animal is forgotten, and the case for change grows stronger with every voice added.</p>
 
-    <p>While our primary focus is cats, this map is for all animals — <strong>a voice for those who cannot speak for themselves</strong>. Our hope is that communities will use it to see where harm is concentrated, to recognise where targeted killings may be happening in their own neighbourhoods, and to stay vigilant in keeping their companion animals safe.</p>
+    <div class="tool-note">
+      <p>Report Animal Harm is a record-keeping tool, not an enforcement or investigation service. We gather and map data; we don't attend incidents, collect physical evidence, or take forensic action. What we offer is the bigger picture — a body of evidence that communities, rescues, and advocates can draw on when data matters most.</p>
+    </div>
 
-    <div class="pull">We focus on cats first for a reason — and that reason is a system with no way to check itself.</div>
-
-    <p>Community trapping groups do not routinely scan for microchips, and the data they produce relies largely on an honour system. Platforms such as Trap.NZ and the Predator Free mapping tools record catches the same way: a trapper or administrator logs whatever they choose against a record, with no verification step, no photo requirement, and no audit trail that cross-checks entries. Nothing in the system itself prevents someone from logging a neighbour's cat — or anything else — as "other," or from leaving the detail blank. In practice, this means there is no reliable mechanism to detect misuse.</p>
-
-    <p>The hardest cases sit in a genuine grey zone: a cat that is owned but unchipped, unidentified, and roaming, where a person could claim they believed it was feral even when that is not true. That ambiguity is real, and it is precisely where companion animals are being lost.</p>
-
-    <p>To be clear, we do not dispute that feral cats can, in some places and at some times, harm populations of native wildlife. But not everywhere, and not always. The current approach treats a complex ecological question as a simple one. An indiscriminate focus on killing introduced predators is politically convenient — it meets little resistance and offers visible activity — but it is not the same as rigorous, science-led conservation, and it overlooks the many other drivers of biodiversity loss and habitat degradation.</p>
-
-    <p>The most pressing problem is this: <strong>companion cats and community or stray cats were deliberately not added to the Predator Free target list, and for good reason.</strong> Yet many supporters of the programme do not understand the difference between feral, stray, and companion cats — and that misunderstanding is now costing animals their lives, as people trap and kill cats that belong to their neighbours.</p>
-
-    <p>Every cat deserves better than this, including those who, through no fault of their own, have been abandoned or lost and have become stray. They are the product of gaps in our care as a society, not targets to be eliminated.</p>
-
-    <p>This project is about bringing evidence, clarity, and accountability to a conversation that badly needs all three.</p>
+    <p class="tagline">"Standing together for the animals who can't speak for themselves."</p>
   </div>
 
-  <div class="cta-block">
-    <h3>Have you witnessed harm to an animal?</h3>
-    <p>Every report builds the picture. Reports are reviewed before they appear on the map.</p>
-    <a href="submit.html" class="cta-btn">Report an incident →</a>
+  <div class="info-cta">
+    <div>
+      <h3>Want the full background?</h3>
+      <p>Read about the policy gap driving this project, and more.</p>
+    </div>
+    <a href="info.html" class="info-btn">Information →</a>
+  </div>
+
+  <div class="contact">
+    <div class="contact-label">Get in touch</div>
+    <a href="mailto:reportanimalharm@gmail.com">reportanimalharm@gmail.com</a>
   </div>
 </div>
 
