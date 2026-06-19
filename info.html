@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Information — NZ Animal Harm Map</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #F0EEE8; color: #4a4a44; min-height: 100vh; }
+
+    header {
+      background: #9DBFBF;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 4px solid #E5421F;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 26px; font-weight: 700; color: #F0EEE8;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    header h1 span { color: #E5421F; }
+    .nav-links { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .nav-link {
+      font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.5px; color: #F0EEE8;
+      text-decoration: none; padding: 8px 14px; border-radius: 2px;
+    }
+    .nav-link:hover { background: rgba(240,238,232,0.18); }
+    .nav-link.active { color: #3e5454; }
+    .nav-link.report { background: #E5421F; color: #F0EEE8; }
+    .nav-link.report:hover { background: #c23311; }
+
+    .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    .lede-label {
+      font-family: 'Oswald', sans-serif; font-size: 13px; text-transform: uppercase;
+      letter-spacing: 2px; color: #E5421F; margin-bottom: 12px;
+    }
+    h2.page-title {
+      font-family: 'Oswald', sans-serif; font-size: 36px; font-weight: 700;
+      color: #4A6E7E; line-height: 1.1; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 14px;
+    }
+    .page-intro { font-size: 16px; line-height: 1.7; color: #6a6a62; margin-bottom: 36px; max-width: 640px; }
+
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 18px;
+    }
+    .tile {
+      aspect-ratio: 1 / 1;
+      background: #4A6E7E;
+      border: none;
+      border-radius: 6px;
+      padding: 22px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+      transition: transform 0.12s, background 0.12s;
+      color: #F0EEE8;
+      font-family: 'Inter', sans-serif;
+    }
+    .tile:hover { transform: translateY(-3px); background: #3d5c6a; }
+    .tile.active { background: #E5421F; }
+    .tile .tile-icon { font-size: 30px; line-height: 1; }
+    .tile .tile-title {
+      font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.15;
+    }
+    .tile .tile-cue { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.85; }
+
+    .panel {
+      display: none;
+      background: #fff;
+      border-radius: 6px;
+      border-top: 4px solid #E5421F;
+      padding: 36px 38px;
+      margin-top: 22px;
+    }
+    .panel.open { display: block; }
+    .panel h3 {
+      font-family: 'Oswald', sans-serif; font-size: 26px; font-weight: 700;
+      color: #4A6E7E; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px;
+    }
+    .panel p { font-size: 16.5px; line-height: 1.8; color: #4a4a44; margin-bottom: 22px; }
+    .panel p.lead { font-size: 19px; font-weight: 500; color: #3a3a34; line-height: 1.65; }
+    .panel strong { color: #4A6E7E; }
+    .panel .pull {
+      border-left: 4px solid #E5421F; padding: 6px 0 6px 22px; margin: 30px 0;
+      font-family: 'Oswald', sans-serif; font-size: 21px; line-height: 1.4; color: #4A6E7E;
+    }
+    .panel-close {
+      background: none; border: 1px solid #9DBFBF; color: #4A6E7E;
+      font-family: 'Oswald', sans-serif; font-size: 13px; text-transform: uppercase;
+      letter-spacing: 1px; padding: 9px 18px; border-radius: 3px; cursor: pointer; margin-top: 8px;
+    }
+    .panel-close:hover { background: #9DBFBF; color: #F0EEE8; }
+
+    .contact {
+      text-align: center; margin-top: 56px; padding-top: 32px; border-top: 1px solid #d4d0c8;
+    }
+    .contact-label {
+      font-family: 'Oswald', sans-serif; font-size: 13px; text-transform: uppercase;
+      letter-spacing: 2px; color: #8a8a82; margin-bottom: 8px;
+    }
+    .contact a { font-family: 'Oswald', sans-serif; font-size: 22px; color: #4A6E7E; text-decoration: none; font-weight: 500; }
+    .contact a:hover { color: #E5421F; }
+
+    footer { text-align: center; padding: 30px 24px; font-size: 13px; color: #8a8a82; }
+    footer a { color: #4A6E7E; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>NZ <span>Animal</span> Harm Map</h1>
+  <nav class="nav-links">
+    <a href="about.html" class="nav-link">About</a>
+    <a href="index.html" class="nav-link">Map</a>
+    <a href="info.html" class="nav-link active">Information</a>
+    <a href="submit.html" class="nav-link report">+ Report an incident</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="lede-label">Information</div>
+  <h2 class="page-title">Understanding the issue</h2>
+  <p class="page-intro">Tap a topic to read more. We'll keep adding to this page over time as the project grows.</p>
+
+  <div class="tile-grid">
+    <button class="tile" data-panel="predatorfree" aria-expanded="false">
+      <span class="tile-icon">&#9873;</span>
+      <span class="tile-title">Predator Free 2050 &amp; cats</span>
+      <span class="tile-cue">Read more +</span>
+    </button>
+  </div>
+
+  <div class="panel" id="predatorfree">
+    <h3>Predator Free 2050 &amp; cats</h3>
+    <p class="lead">Report Animal Harm exists because of a gap — a definitional gap at the heart of New Zealand's Predator Free 2050 programme.</p>
+
+    <p>When feral cats were added to the target list, the policy arrived without clear definitions distinguishing feral cats from stray, community, and companion cats, and without clearly defined areas where control is appropriate. Rural New Zealand has long been a hotspot for the abandonment and dumping of animals, and the cats left behind there are now too easily swept up under the same "feral" label.</p>
+
+    <p>This map is our response. Data is the most persuasive evidence there is, so we have built an open, public record of where animals are being harmed and killed across Aotearoa. It is free for anyone to view and contribute to.</p>
+
+    <p>While our primary focus is cats, this map is for all animals — <strong>a voice for those who cannot speak for themselves</strong>. Our hope is that communities will use it to see where harm is concentrated, to recognise where targeted killings may be happening in their own neighbourhoods, and to stay vigilant in keeping their companion animals safe.</p>
+
+    <div class="pull">We focus on cats first for a reason — and that reason is a system with no way to check itself.</div>
+
+    <p>Community trapping groups do not routinely scan for microchips, and the data they produce relies largely on an honour system. Platforms such as Trap.NZ and the Predator Free mapping tools record catches the same way: a trapper or administrator logs whatever they choose against a record, with no verification step, no photo requirement, and no audit trail that cross-checks entries. Nothing in the system itself prevents someone from logging a neighbour's cat — or anything else — as "other," or from leaving the detail blank. In practice, this means there is no reliable mechanism to detect misuse.</p>
+
+    <p>The hardest cases sit in a genuine grey zone: a cat that is owned but unchipped, unidentified, and roaming, where a person could claim they believed it was feral even when that is not true. That ambiguity is real, and it is precisely where companion animals are being lost.</p>
+
+    <p>To be clear, we do not dispute that feral cats can, in some places and at some times, harm populations of native wildlife. But not everywhere, and not always. The current approach treats a complex ecological question as a simple one. An indiscriminate focus on killing introduced predators is politically convenient — it meets little resistance and offers visible activity — but it is not the same as rigorous, science-led conservation, and it overlooks the many other drivers of biodiversity loss and habitat degradation.</p>
+
+    <p>The most pressing problem is this: <strong>companion cats and community or stray cats were deliberately not added to the Predator Free target list, and for good reason.</strong> Yet many supporters of the programme do not understand the difference between feral, stray, and companion cats — and that misunderstanding is now costing animals their lives, as people trap and kill cats that belong to their neighbours.</p>
+
+    <p>Every cat deserves better than this, including those who, through no fault of their own, have been abandoned or lost and have become stray. They are the product of gaps in our care as a society, not targets to be eliminated.</p>
+
+    <p>This project is about bringing evidence, clarity, and accountability to a conversation that badly needs all three.</p>
+
+    <button class="panel-close" data-close="predatorfree">Close ✕</button>
+  </div>
+
+  <div class="contact">
+    <div class="contact-label">Get in touch</div>
+    <a href="mailto:reportanimalharm@gmail.com">reportanimalharm@gmail.com</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">← Back to the map</a>
+</footer>
+
+<script>
+  var tiles = document.querySelectorAll('.tile');
+  tiles.forEach(function(tile) {
+    tile.addEventListener('click', function() {
+      var id = tile.getAttribute('data-panel');
+      var panel = document.getElementById(id);
+      var isOpen = panel.classList.contains('open');
+
+      document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('open'); });
+      document.querySelectorAll('.tile').forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-expanded', 'false'); });
+
+      if (!isOpen) {
+        panel.classList.add('open');
+        tile.classList.add('active');
+        tile.setAttribute('aria-expanded', 'true');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  });
+
+  document.querySelectorAll('.panel-close').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id = btn.getAttribute('data-close');
+      document.getElementById(id).classList.remove('open');
+      document.querySelectorAll('.tile').forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-expanded', 'false'); });
+    });
+  });
+</script>
+
+</body>
+</html>
