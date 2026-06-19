@@ -157,6 +157,7 @@
   <nav class="nav-links">
     <a href="about.html" class="nav-link">About</a>
     <a href="index.html" class="nav-link active">Map</a>
+    <a href="info.html" class="nav-link">Information</a>
     <a href="submit.html" class="report-btn">+ Report an incident</a>
   </nav>
 </header>
@@ -202,6 +203,7 @@ legend.onAdd = function() {
   + '<div style="border-top:1px solid rgba(255,255,255,0.25);margin-top:8px;padding-top:8px">'
   + '<div class="legend-row"><span class="dot" style="background:#566573"></span>Deceased</div>'
   + '<div class="legend-row"><span class="dot" style="background:rgba(255,255,255,0.9);border:3px solid #566573;box-sizing:border-box"></span>Survived</div>'
+  + '<div class="legend-row"><span class="dot" style="background:#E6D200;border:1px solid #6a6300;box-sizing:border-box"></span>Abandoned</div>'
   + '</div>';
   return d;
 };
@@ -242,6 +244,7 @@ function normaliseMethod(m) {
 function normaliseStatus(s) {
   if (!s) return '';
   var t = s.toLowerCase();
+  if (t.includes('abandon') || t.includes('dumped')) return 'abandoned';
   if (t.includes('surviv') || t.includes('alive')) return 'survived';
   if (t.includes('decease') || t.includes('dead') || t.includes('died') || t.includes('killed')) return 'deceased';
   return '';
@@ -250,7 +253,10 @@ function normaliseStatus(s) {
 function makeIcon(method, status) {
   var c = (METHODS[method] || METHODS.other).color;
   var inner;
-  if (status === 'survived') {
+  if (status === 'abandoned') {
+    // lemon-yellow solid dot = abandoned / dumped
+    inner = '<div style="width:14px;height:14px;border-radius:50%;background:#E6D200;border:2px solid #6a6300;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>';
+  } else if (status === 'survived') {
     // hollow ring = the animal survived
     inner = '<div style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.9);border:3px solid ' + c + ';box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>';
   } else {
@@ -281,6 +287,8 @@ function renderPins(data) {
       statusLine = '<span style="color:#2E8B57;font-size:12px;font-weight:bold">● Survived</span><br>';
     } else if (d.statusKey === 'deceased') {
       statusLine = '<span style="color:#C0392B;font-size:12px;font-weight:bold">● Deceased</span><br>';
+    } else if (d.statusKey === 'abandoned') {
+      statusLine = '<span style="color:#9a8a00;font-size:12px;font-weight:bold">● Abandoned</span><br>';
     }
     marker.bindPopup(
       '<b style="color:' + (METHODS[d.method]||METHODS.other).color + '">' + (METHODS[d.method]||{label:d.method}).label + '</b><br>' +
