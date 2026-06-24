@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trapping Watch — NZ Animal Harm Map</title>
+  <meta name="description" content="An approximate map of known and active animal-trapping activity across Aotearoa. Community-reported, anonymous, reviewed before publishing." />
+
+  <!-- Social share preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Report Animal Harm" />
+  <meta property="og:url" content="https://reportanimalharm.org/trappers.html" />
+  <meta property="og:title" content="Trapping Watch — NZ Animal Harm Map" />
+  <meta property="og:description" content="An approximate map of known and active animal-trapping activity across Aotearoa. Community-reported and anonymous." />
+  <meta property="og:image" content="https://reportanimalharm.org/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Trapping Watch" />
+  <meta name="twitter:description" content="An approximate map of known and active animal-trapping activity across Aotearoa." />
+  <meta name="twitter:image" content="https://reportanimalharm.org/og-image.png" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #F0EEE8; color: #4A6E7E; }
+
+    header {
+      background: #9DBFBF; padding: 18px 24px; display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; border-bottom: 4px solid #E5421F; flex-wrap: wrap;
+    }
+    .header-text { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+    header h1 {
+      font-family: 'Oswald', sans-serif; font-size: 30px; font-weight: 700; color: #F0EEE8;
+      line-height: 1; text-transform: uppercase; letter-spacing: 1px;
+    }
+    header h1 span { color: #E5421F; }
+    header p { font-size: 12px; color: #3e5454; letter-spacing: 0.5px; padding-bottom: 3px; }
+    .nav-links { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .nav-link {
+      font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.5px; color: #F0EEE8; text-decoration: none; padding: 8px 14px; border-radius: 2px;
+    }
+    .nav-link:hover { background: rgba(240,238,232,0.18); }
+    .nav-link.active { color: #3e5454; }
+    .report-btn {
+      background: #E5421F; color: #F0EEE8; text-decoration: none; font-family: 'Oswald', sans-serif;
+      font-size: 15px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 10px 20px; border-radius: 2px; white-space: nowrap;
+    }
+    .report-btn:hover { background: #c23311; }
+
+    .note-bar {
+      background: #e8e4da; padding: 9px 24px; font-size: 13px; color: #5a5a52; border-bottom: 1px solid #d4d0c8;
+    }
+    .note-bar strong { color: #4A6E7E; }
+
+    #stat-bar { padding: 12px 24px; background: #F0EEE8; display: flex; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid #d4d0c8; }
+    .stat { background: #fff; border-radius: 2px; padding: 8px 16px; border-left: 3px solid #4A6E7E; }
+    .stat span { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; display: block; color: #4A6E7E; }
+    .stat label { color: #8a9a8a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    #status { padding: 5px 24px; font-size: 11px; color: #9aaa9a; background: #F0EEE8; letter-spacing: 0.3px; }
+    #map { width: 100%; height: calc(100vh - 240px); min-height: 400px; }
+
+    .legend { background: #6b7d6b; border: none; border-radius: 2px; padding: 10px 14px; font-size: 12px; line-height: 1.8; }
+    .legend-row { display: flex; align-items: center; gap: 8px; color: #F0EEE8; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
+    .zone-dot { width: 20px; height: 20px; border-radius: 50%; background: rgba(74,110,126,0.3); border: 2px solid #3D5A6C; display: inline-block; flex-shrink: 0; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-text">
+    <h1>Trapping <span>Watch</span></h1>
+    <p>Approximate areas of known and active trapping in Aotearoa</p>
+  </div>
+  <nav class="nav-links">
+    <a href="about.html" class="nav-link">About</a>
+    <a href="index.html" class="nav-link">Harm Map</a>
+    <a href="trappers.html" class="nav-link active">Trapping Watch</a>
+    <a href="info.html" class="nav-link">Information</a>
+    <a href="report-trapping.html" class="report-btn">+ Report trapping</a>
+  </nav>
+</header>
+
+<div class="note-bar">
+  <strong>Approximate areas only.</strong> Pins show the general area of reported trapping activity — never exact addresses, and never naming individuals.
+</div>
+<div id="stat-bar"></div>
+<div id="status">Loading data...</div>
+<div id="map"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script>
+const SHEET_ID = 'PASTE_TRAPPING_SHEET_ID';
+const JSON_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Sheet1';
+
+var allData = [];
+var clusterGroup;
+
+var leafletMap = L.map('map', { center: [-41.3, 172.5], zoom: 6 });
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+}).addTo(leafletMap);
+
+var legend = L.control({ position: 'bottomright' });
+legend.onAdd = function() {
+  var d = L.DomUtil.create('div', 'legend');
+  d.innerHTML = '<div class="legend-row"><span class="zone-dot"></span>Trapping activity (approx. area)</div>';
+  return d;
+};
+legend.addTo(leafletMap);
+
+clusterGroup = L.markerClusterGroup({ maxClusterRadius: 50 });
+leafletMap.addLayer(clusterGroup);
+
+function parseGviz(text) {
+  var json = JSON.parse(text.replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
+  var cols = json.table.cols.map(function(c) { return c.label.toLowerCase().trim(); });
+  return json.table.rows.map(function(row) {
+    var obj = {};
+    cols.forEach(function(col, i) {
+      var cell = row.c[i];
+      obj[col] = cell && cell.v !== null ? String(cell.v) : '';
+    });
+    return obj;
+  }).filter(function(r) { return r.suburb || r.address || r.region; });
+}
+
+function makeIcon() {
+  return L.divIcon({
+    className: '',
+    html: '<div style="width:26px;height:26px;border-radius:50%;background:rgba(74,110,126,0.30);border:2px solid #3D5A6C;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.3)"><div style="width:9px;height:9px;border-radius:50%;background:#3D5A6C"></div></div>',
+    iconSize: [26,26], iconAnchor: [13,13]
+  });
+}
+
+function renderStats(data) {
+  var regions = {};
+  data.forEach(function(d){ if(d.region) regions[d.region.toLowerCase()] = 1; });
+  document.getElementById('stat-bar').innerHTML =
+    '<div class="stat"><span>' + data.length + '</span><label>Reports</label></div>' +
+    '<div class="stat"><span>' + Object.keys(regions).length + '</span><label>Regions affected</label></div>';
+}
+
+function renderPins(data) {
+  renderStats(data);
+  clusterGroup.clearLayers();
+  data.forEach(function(d) {
+    var marker = L.marker([d.lat, d.lng], { icon: makeIcon() });
+    var area = (d.suburb || '') + (d.region ? ', ' + d.region : '');
+    marker.bindPopup(
+      '<b style="color:#3D5A6C">Trapping activity</b><br>' +
+      (d.target ? '<b>Target:</b> ' + d.target + '<br>' : '') +
+      (d.date ? '<span style="color:#888;font-size:12px">' + d.date + '</span><br>' : '') +
+      '<span style="color:#888;font-size:12px">' + area + '</span>' +
+      (d.description ? '<p style="margin:6px 0 0;font-size:13px">' + d.description + '</p>' : '') +
+      (d.source_url ? '<p style="margin:6px 0 0;font-size:12px"><a href="' + d.source_url + '" target="_blank" rel="noopener">Source</a></p>' : '')
+    );
+    clusterGroup.addLayer(marker);
+  });
+}
+
+async function loadSheet() {
+  var status = document.getElementById('status');
+  try {
+    var r = await fetch(JSON_URL);
+    if (!r.ok) throw new Error('Sheet not accessible');
+    var text = await r.text();
+    var rows = parseGviz(text);
+    if (rows.length === 0) {
+      status.textContent = 'No reports yet — add data to your Google Sheet to see areas appear.';
+      renderStats([]);
+      return;
+    }
+    var resolved = [];
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var lat = parseFloat(row.lat), lng = parseFloat(row.lng);
+      if (lat && lng) resolved.push(Object.assign({}, row, { lat: lat, lng: lng }));
+    }
+    allData = resolved;
+    var skipped = rows.length - allData.length;
+    status.textContent = allData.length + ' report(s) loaded'
+      + (skipped > 0 ? ' (' + skipped + ' awaiting coordinates)' : '')
+      + '. Last updated: ' + new Date().toLocaleTimeString();
+    renderPins(allData);
+  } catch(e) {
+    status.textContent = 'Could not load sheet. Make sure sharing is set to "Anyone with the link can view".';
+    console.error(e);
+  }
+}
+
+loadSheet();
+</script>
+</body>
+</html>
