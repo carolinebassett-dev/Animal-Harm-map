@@ -147,6 +147,23 @@
     .panel .steps li { position: relative; padding: 8px 0 8px 26px; font-size: 15px; line-height: 1.6; color: #4a4a44; }
     .panel .steps li::before { content: '→'; position: absolute; left: 0; top: 8px; color: #E5421F; font-weight: bold; }
 
+    .letter-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0 8px; }
+    .btn-copy, .btn-download {
+      font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.5px; padding: 13px 26px; border-radius: 3px; cursor: pointer; text-decoration: none;
+      display: inline-block; border: none;
+    }
+    .btn-copy { background: #E5421F; color: #F0EEE8; }
+    .btn-copy:hover { background: #c23311; }
+    .btn-copy.copied { background: #4A6E7E; }
+    .btn-download { background: #fff; color: #4A6E7E; border: 1px solid #4A6E7E; }
+    .btn-download:hover { background: #4A6E7E; color: #F0EEE8; }
+    .howto { background: #f6efe4; border-radius: 4px; padding: 18px 22px; margin: 22px 0; }
+    .howto h4 { font-family: 'Oswald', sans-serif; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #B07C1E; margin-bottom: 10px; }
+    .howto ol { margin: 0 0 0 18px; }
+    .howto li { font-size: 14.5px; line-height: 1.6; color: #5a5145; margin-bottom: 6px; }
+    .disclaimer { font-size: 13px; color: #8a8a82; font-style: italic; margin-top: 14px; line-height: 1.5; }
+
     .contact {
       text-align: center; margin-top: 56px; padding-top: 32px; border-top: 1px solid #d4d0c8;
     }
@@ -195,6 +212,11 @@
       <span class="tile-icon">&#9878;</span>
       <span class="tile-title">Know the law: killing companion cats</span>
       <span class="tile-cue">Read more +</span>
+    </button>
+    <button class="tile" data-panel="letter" aria-expanded="false">
+      <span class="tile-icon">&#9993;</span>
+      <span class="tile-title">Write to your council: a ready-to-use letter</span>
+      <span class="tile-cue">Copy &amp; send +</span>
     </button>
   </div>
 
@@ -318,6 +340,415 @@
     <button class="panel-close" data-close="thelaw">Close ✕</button>
   </div>
 
+  <div class="panel" id="letter">
+    <h3>Write to your council: a ready-to-use letter</h3>
+    <p class="lead">A ready-made letter any resident or ratepayer, in any region, can adapt and send to their councillors about cat bylaws, cat colonies and animal welfare law.</p>
+
+    <p>It's written from an ordinary resident's point of view, and it argues <em>with</em> the law, not against the council — grounding every request in the Animal Welfare Act 1999, the Code of Welfare: Companion Cats, the Arms Act 1983 and the Dog Control Act 1996. A calm, specific, well-referenced letter is far harder to dismiss than an angry one.</p>
+
+    <div class="howto">
+      <h4>How to use it</h4>
+      <ol>
+        <li>Copy or download the letter.</li>
+        <li>Fill in every bracketed placeholder — your details, the council's details, the date.</li>
+        <li>Choose <strong>one</strong> of the optional council-specific paragraphs at the end (if any apply) and paste it into the marked spot — or leave it out.</li>
+        <li>Check your own council's current bylaw wording before sending, since several are being rewritten through 2025–2026.</li>
+        <li>Shorten it if you like — a shorter, specific letter is often more effective than a long one.</li>
+      </ol>
+    </div>
+
+    <p><strong>In short, the letter asks a council to:</strong></p>
+    <ul class="steps">
+      <li>Apply the Code's distinction between companion, stray and feral cats before treating any colony as pest control.</li>
+      <li>Offer a managed-colony pathway instead of a blanket feeding ban.</li>
+      <li>Build a rescue/carer exemption into any cat-ownership cap, weigh abandonment risk, and properly subsidise desexing.</li>
+      <li>Confirm any trapping and firearms use already meets national law (daily trap checks, the 150m leg-hold rule, Arms Act discharge rules).</li>
+      <li>Ensure animal welfare is weighed in any pest-management cost/benefit analysis.</li>
+      <li>Help close the enforcement gap that lets companion cats be killed as "suspected feral."</li>
+      <li>Confirm it does not endorse using dogs to flush cats — which risks the Dog Control Act.</li>
+      <li>Check bylaw wording independently, require evidence before lethal control, trial TNR, publish costs, and keep public education accurate.</li>
+    </ul>
+
+    <div class="letter-actions">
+      <button class="btn-copy" id="copyLetterBtn">Copy the letter</button>
+      <a class="btn-download" href="council-letter-template.docx" download>Download (Word)</a>
+    </div>
+
+    <p class="disclaimer">This is a template for personal use, written from a resident's point of view. It is not legal advice, and nothing in it should be presented as a legal opinion or on behalf of any organisation unless you say so yourself.</p>
+
+    <button class="panel-close" data-close="letter">Close ✕</button>
+  </div>
+
+  <script id="letterTemplate" type="text/plain">[Your Full Name]
+
+[Your Street Address]
+
+[Suburb, Town/City, Postcode]
+
+[Your Email Address] · [Your Phone Number]
+
+[Date]
+
+[Councillor's Name, or "The Mayor and Councillors"]
+
+[Council Name]
+
+[Council Postal Address]
+
+Re: Animal welfare obligations in [Council Name]'s approach to companion
+cats and cat colonies
+
+Dear [Councillor's Name / Mayor and Councillors],
+
+I am writing to you as a resident and ratepayer of [District/City Name]
+to raise concerns about how the council's current or proposed rules for
+companion cats and cat colonies sit alongside New Zealand's existing
+animal welfare law, and to ask that these obligations be explicitly
+considered in [your current cat bylaw / animal bylaw review, or: your
+Regional Pest Management Plan review].
+
+New Zealand has no single national law dedicated to cats, unlike the Dog
+Control Act 1996 for dogs. In that gap, councils across the country have
+understandably begun writing their own local rules. I support
+responsible cat ownership and sensible local rules. My concern is
+narrower: that any rule your council adopts should work with, not
+around, the welfare standards Parliament has already set in the Animal
+Welfare Act 1999 and the Code of Welfare: Companion Cats, and should be
+applied with a clear understanding of who those rules are actually for.
+
+1. Please distinguish companion, stray and feral cats before any colony is treated as a pest
+
+The Code of Welfare: Companion Cats draws a careful legal line: a
+companion cat is owned and cared for by people; a stray cat is a lost or
+abandoned companion cat, living alone or in a colony, with its needs
+indirectly met by people and living near human settlement; a feral cat
+has none of its needs met by people, generally does not live near human
+settlement, and is excluded from the Code altogether. Most cat colonies
+reported to councils are, on the Code's own definition, colonies of
+stray cats — not feral cats. I ask that council staff, contractors and
+any complaint-handling process apply this distinction before a colony is
+treated as a pest-control matter rather than a companion-animal welfare
+one.
+Since Feral cats have been added to the Predator Free list, why are
+Companion cats, Stray cats and Colonies being targeted in Urban and
+Lifestyle block communities? Under the current distinction, Feral Cats
+do not live near human settlement.
+
+2. Please offer a managed-colony pathway rather than a blanket feeding ban
+
+Where a colony does need to be addressed, the Code of Welfare's own
+preferred model is a managed colony: a plan agreed with the landowner
+and/or council covering identification, food, water and shelter, a
+vaccination and parasite programme, a desexing programme, and a
+long-term management strategy. A rule that simply restricts or bans
+feeding, without an accompanying welfare-based plan, does not make the
+cats' need for food disappear, it just makes it harder for them to meet
+that need safely, which sits in direct tension with the
+owner/person-in-charge duties in sections 10 and 11 of the Animal
+Welfare Act 1999 to meet an animal's physical and health needs and to
+alleviate unreasonable or unnecessary pain or distress. In practice, a
+cat cut off from a reliable food source has to work harder to find food
+elsewhere, which for a cat living near people usually means hunting
+more, not less, so a feeding ban risks prolonging the cats' suffering
+while also increasing the wildlife predation it is presumably meant to
+reduce. I ask that any feeding restriction your council adopts be paired
+with a genuine managed-colony option, consistent with the Code, rather
+than introduced on its own.
+
+3. Please weigh the abandonment risk in ownership caps, confinement rules and desexing mandates — and make desexing genuinely affordable
+
+A flat numeric limit on how many cats a person may keep is a blunt
+instrument for ordinary households, and it can directly conflict with
+the work of genuine rescue organisations and managed-colony carers,
+exactly the people doing the welfare work the Code of Welfare describes
+as best practice. This is not a hypothetical overlap: caps like this are
+typically defined around the word "keep," not "own", Tararua District
+Council's bylaw, for example, defines "keep or keeping" as "the owning,
+looking after, caring for, being in charge of or otherwise being in
+possession of any Animal," language clearly modelled on the Animal
+Welfare Act's own "person in charge" test. That means a resident
+managing a colony of cats they don't own is very likely already caught
+by a numeric cap, whether or not the council intended to regulate that
+kind of custodial care at all. I ask that any such cap include a clear,
+documented exemption or permit process, verified by evidence such as a
+landowner/council agreement, vaccination and desexing records, or
+registration with an organisation like a Registered Rescue, for genuine
+rescue or colony-management operations, so the rule does not
+inadvertently penalise the community's own welfare safety net.
+
+Beyond that, I would ask the council to weigh a wider risk: that a cap
+someone cannot meet, or a confinement or curfew requirement they cannot
+afford to comply with, does not necessarily mean fewer cats, it can mean
+more abandoned ones. Abandonment is already a specific offence under
+section 14(2) of the Animal Welfare Act 1999, and the Code of Welfare:
+Companion Cats treats it as a last resort to be actively avoided, not a
+foreseeable side-effect of a bylaw. Properly confining a cat (a secure
+outdoor enclosure, cat-proof fencing, or similar) has a real upfront
+cost, and I don't think it's realistic, in the current economic
+environment, to assume every household can absorb that cost at short
+notice. Where the council does consider a cap or a confinement
+requirement, I would ask that it be phased in with genuine transition
+time, rather than introduced as an unfunded requirement that risks
+increasing exactly the kind of unmanaged, displaced-cat problem this
+letter is otherwise concerned about.
+
+The same logic applies to desexing. A desexing mandate is only as fair,
+and as effective, as people's actual ability to comply with it. I ask
+that any desexing requirement be paired with meaningfully subsidised
+desexing, run directly, through SPCA, or through a low-cost veterinary
+partnership, at a greater rate than currently in existence, particularly
+for lower-income households, rather than relying on a vet-certified
+health exemption alone to cover people who simply cannot afford the
+procedure. Without that support, a desexing mandate risks becoming, in
+effect, a rule that penalises cost rather than encourages responsible
+ownership.
+
+4. Please confirm trapping and firearms use already comply with national law, regardless of any bylaw
+
+Whatever a local bylaw says, trapping is already governed by national
+rules that no bylaw can loosen. Under section 36 of the Animal Welfare
+Act 1999, any live trap must be manually inspected within 12 hours after
+sunrise every day it remains set, and any animal caught must be cared
+for or humanely killed without delay. Under the Animal Welfare (Leg-hold
+Traps) Order 2007, which expressly states that it "supersedes all
+existing local bylaws governing the use of leg-hold traps", leg-hold
+traps cannot be used within 150 metres of a dwelling without the
+occupier's express permission, or anywhere there is a probable risk of
+catching a pet. I ask for written confirmation that any trapping your
+council runs, licenses or contracts for, including around known
+colonies, complies with both of these requirements, and that cage
+trapping (rather than leg-hold or kill traps) is used wherever companion
+cats may be present, consistent with MPI's own published guidance on
+feral cat control.
+
+The same applies to shooting as a control method, which MPI's own
+"Targeting Feral Cats" guide describes as an option "in rural, open
+landscapes." Under section 48 of the Arms Act 1983, discharging a
+firearm in or near a dwellinghouse or public place, without reasonable
+excuse, so as to endanger property or to endanger, annoy or frighten any
+person is an offence carrying up to 6 months' imprisonment or a $10,000
+fine. There is no fixed safe distance written into the Act; Te Tari
+Pūreke, the Firearms Safety Authority, instead places the responsibility
+on the shooter to assess their own firing zone and account for their
+round's full range, and advises telling neighbours in advance if
+shooting anywhere near a dwelling. On a lifestyle block with houses
+nearby, that is exactly as constraining as it would be in town. I ask
+that the council make clear, in any guidance it gives residents or
+contractors about cat control, that this is a real legal constraint and
+not a matter of personal judgement alone.
+
+5. Where feral cats are managed as a pest, please confirm animal welfare is part of the cost/benefit analysis
+
+If your council administers or contributes to a Regional Pest Management
+Plan under the Biosecurity Act 1993 that declares feral cats a pest,
+that plan must be consistent with the National Policy Direction for Pest
+Management 2015, which requires a formal analysis of the benefits and
+costs of any proposed pest programme. MPI's own guidance on that
+analysis states that non-monetary costs — including animal welfare, must
+be considered, and that the Animal Welfare Act 1999 must be taken into
+account when analysing the costs of a proposed plan. I ask for
+confirmation that this welfare analysis has been, or will be, properly
+documented for any plan provisions affecting cats.
+
+6. Please help close the practical enforcement gap around companion cats killed as "suspected feral"
+
+I am also concerned about a pattern affecting residents in both urban
+and lifestyle-rural areas: companion cats being trapped, injured or
+killed, with the person responsible relying on the belief that the cat
+was feral. It is worth being clear about what the law actually says
+here, because I don't think it is well understood. Section 30D(4) of the
+Animal Welfare Act 1999 states that the exemption allowing pests to be
+killed lawfully does not apply to any animal that was in fact kept as a
+pet, and because offences under section 12 of the Act are strict
+liability, a person's genuine belief that a cat was feral is not, in
+itself, a defence if the cat turns out to have been owned. In other
+words, "I thought it was feral" is not the legal grey area many
+residents (and, I suspect, many people trapping cats) assume it to be.
+
+The real gap is practical, not legal: without mandatory identification,
+it is very hard to establish after the fact that a cat was owned, which
+makes these incidents difficult to investigate and prosecute, and leaves
+affected owners with little recourse. I ask that the council help close
+that gap by: publicising clearly that killing or injuring a companion
+cat remains a criminal offence under the Animal Welfare Act regardless
+of a stated belief that it was feral; actively encouraging microchipping
+as a practical protection, not just a compliance requirement; requiring
+cage trapping only, with neighbour notification, for any control
+activity your council runs, licenses or contracts for near dwellings or
+known colonies; and referring suspected cases involving companion cats
+to SPCA and/or Police for investigation under the Animal Welfare Act,
+rather than treating them only as a bylaw or nuisance matter.
+
+7. Please do not endorse using dogs to flush cats — it risks the Dog Control Act too
+
+I also want to raise a specific method described in Predator Free NZ's
+own published "Targeting Feral Cats" guide, which advises that "dogs can
+also be used to flush feral cats up trees during the day, where they can
+be easily shot" (predatorfreenz.org, Targeting Feral Cats). I would ask
+the council not to endorse, recommend, or use this method, for two
+reasons.
+
+First, a dog flushing a cat cannot tell a feral cat from a companion cat
+any more reliably than the person directing it can, so this method
+carries the same misidentification risk raised in point 6 above, applied
+to an animal that is, by its nature, harder to control once it is
+chasing something. Second, a dog doing this is very likely to fall foul
+of the Dog Control Act 1996 in its own right. Section 52 of that Act
+requires an owner to keep a dog under control at all times, including on
+the owner's own land, and sections 57–58 make it an offence for a dog to
+attack, or to rush at, startle or attack, a person, animal or vehicle —
+conduct that a dog trained or directed to flush and corner a cat is, by
+design, engaging in. A dog with that much prey drive engaged is also,
+self-evidently, a greater risk to any child or member of the public
+nearby than a dog under normal control, and repeated incidents can see a
+dog classified as "dangerous" under the Act, with consequences for the
+owner as well as the dog. I ask the council to confirm that no cat
+control activity it runs, licenses, funds or promotes involves using
+dogs in this way, and that any public-facing guidance it gives residents
+does not repeat this suggestion without that warning attached.
+
+8. Five further requests: bylaw sourcing, a targeted policy review, a TNR pilot, fiscal transparency and public education
+
+I also ask the council to consider the following five points together,
+since they raise related questions about where cat-management policy
+comes from, whether it is actually working, and how ratepayer money is
+being spent on it.
+
+First, on the source of any bylaw wording: whatever organisation's
+language a proposed bylaw draws on, conservation or welfare-focused, I
+ask that it be independently checked against the Animal Welfare Act 1999
+and the Code of Welfare: Companion Cats before adoption, for the same
+reasons set out throughout this letter, rather than adopted on the basis
+that an advocacy group recommended it.
+
+Second, on lethal control specifically: I would ask the council to
+require an evidence-based justification before any lethal removal of
+cats from stray or colony populations in urban and lifestyle-residential
+areas, as distinct from feral cat management under a Regional Pest
+Management Plan. The New Zealand Ecological Society's own synthesis of
+the evidence notes that no study has robustly demonstrated that
+predation by pet or stray cats reduces prey populations at a population
+level, even though individual cats do kill wildlife. Lethal control of
+urban stray or colony cats should be justified by evidence specific to
+that context, not assumed to be justified by the general case for feral
+cat control elsewhere.
+
+Third, I would ask the council to consider a time-limited
+trap-neuter-return (TNR) pilot in one or two high-density colony areas,
+instead of the managed-colony model described earlier in this letter. A
+targeted TNR pilot run in Manurewa, Auckland (2015–2016) found a
+statistically significant reduction in stray cat shelter intake and
+euthanasia in the pilot suburb compared to non-pilot suburbs. The
+researchers were appropriately honest about the limits of that result —
+a one-year study cannot firmly establish causation, and the
+sterilisation rate achieved was well below that of larger,
+longer-running overseas programmes — which is exactly why a properly
+monitored local pilot, rather than an assumption either way, is the
+right next step. The same evidence base is equally honest that TNR has
+not been shown to reduce predation of native wildlife, which is a
+different goal from reducing colony numbers and improving welfare, and
+I'd ask that any pilot be assessed against the right goal for what it
+actually is.
+
+Fourth, on cost: I ask that the council publish the cost and measured
+outcomes of any cat-control activity it funds, so ratepayers can see
+whether the method being used is actually reducing cat numbers or
+complaints, rather than continuing because it is the default approach.
+If a TNR pilot or a managed-colony programme can be shown to produce
+comparable or better outcomes at comparable or lower cost, I'd ask that
+this be weighed openly against continuing with lethal control alone.
+
+Fifth, on public education: I ask that any material the council produces
+for schools, community trapping groups or its own website about cats be
+checked for accuracy against the Animal Welfare Act, the Code of
+Welfare: Companion Cats, and the actual New Zealand evidence on cats and
+wildlife, rather than repeating claims — in either direction — that the
+evidence doesn't fully support. Children and communities are better
+served by an accurate picture of a genuinely complex issue than a
+simplified one.
+
+  [OPTIONAL — insert one paragraph from page 3 here if it applies to
+  this council, then delete this bracketed instruction before sending.]
+
+What I'm asking for
+
+I would be grateful if you could confirm, in writing, how the points
+above are or will be reflected in [Council Name]'s current or future
+approach to cats, and I would welcome the opportunity to discuss this
+further. I also ask that this letter be treated as a submission on [name
+the specific consultation, bylaw review or plan, if one is open], if one
+is currently open.
+
+Thank you for your attention to this important issue, and for the work
+you do for our district.
+
+Yours sincerely,
+
+[Your Full Name]
+
+Resident and ratepayer, [District/City Name]
+
+============================================================
+OPTIONAL PARAGRAPHS — paste ONE into the marked spot (after section 5) if it matches your council, then delete the rest and this section.
+============================================================
+
+Paste whichever one paragraph below applies into the marked spot in the
+letter (after section 5), then delete the others and this heading. If
+none apply to your council, leave the letter as it is.
+
+If writing to Tauranga City Council
+
+I understand Tauranga City Council's own draft animal bylaw (consulted
+on 1 June – 1 July 2026) did not include any new provisions for cats,
+and that submitters — including Predator Free NZ Trust — have since
+called for mandatory microchipping and desexing, a cap on cat ownership
+numbers, and restrictions on feeding stray or colony cats, ahead of the
+council's decision at its 27 August 2026 meeting. I ask that whatever
+the council decides, points 1–5 above are reflected in it, particularly
+a managed-colony alternative to any feeding restriction and an exemption
+pathway in any ownership cap.
+
+Source: Predator Free NZ Trust submission reported in Scoop, "Tauranga
+Council Hears Calls For Mandatory Cat Microchipping, Desexing", 2026.
+
+If writing to Ashburton District Council
+
+I understand Ashburton District Council's current proposal (consultation
+closed 15 July 2026) includes microchipping, desexing and registration
+for owned cats, alongside a restriction on feeding stray or feral cats
+where it creates a nuisance or affects wildlife. I ask that any feeding
+restriction that is adopted be paired with a genuine managed-colony
+pathway, consistent with the Code of Welfare: Companion Cats, rather
+than standing alone.
+
+Source: Ashburton District Council, "Council proposes new rules for
+cats", June 2026.
+
+If writing to Tararua District Council (including Eketāhuna)
+
+I understand Tararua District Council's Keeping of Animals Bylaw 2024
+has, since September 2024, capped cat ownership at three cats per
+property without council approval, alongside microchip, desex and
+registration requirements, and that the council may require cat numbers
+to be reduced where they are considered a nuisance. I ask the council to
+confirm what exemption or permit process exists for genuine rescue or
+managed-colony operations under this rule, given the tension this can
+create with the welfare work described in the Code of Welfare: Companion
+Cats.
+
+Source: Tararua District Council, Keeping of Animals Bylaw 2024 (adopted
+25 September 2024), sections 7.1–7.4.
+
+If your council's bylaw is silent on colonies (most councils, as at August 2026)
+
+I understand [Council Name]'s current bylaw addresses microchipping,
+desexing and registration for owned cats but does not yet address cat
+colonies, feeding, curfews or ownership numbers. I ask that, when these
+matters are next reviewed, the council consult on a managed-colony
+pathway and an exemption process for rescue operations from the outset,
+rather than defaulting to a blanket restriction.
+</script>
+
   <div class="contact">
     <div class="contact-label">Get in touch</div>
     <a href="mailto:reportanimalharm@gmail.com">reportanimalharm@gmail.com</a>
@@ -355,6 +786,34 @@
       document.querySelectorAll('.tile').forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-expanded', 'false'); });
     });
   });
+
+  // Copy the council letter to the clipboard
+  var copyBtn = document.getElementById('copyLetterBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function() {
+      var text = document.getElementById('letterTemplate').textContent;
+      var done = function() {
+        copyBtn.classList.add('copied');
+        copyBtn.textContent = 'Copied — now paste into your email';
+        setTimeout(function() {
+          copyBtn.classList.remove('copied');
+          copyBtn.textContent = 'Copy the letter';
+        }, 3500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function() { fallbackCopy(text, done); });
+      } else {
+        fallbackCopy(text, done);
+      }
+    });
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); done(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
 </script>
 
 </body>
