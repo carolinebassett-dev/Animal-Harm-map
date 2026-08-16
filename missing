@@ -67,6 +67,10 @@
     .legend { background: #6b7d6b; border: none; border-radius: 2px; padding: 10px 14px; font-size: 12px; line-height: 1.8; }
     .legend-row { display: flex; align-items: center; gap: 8px; color: #F0EEE8; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
     .miss-dot { width: 14px; height: 14px; border-radius: 50%; background: #C9922E; border: 2px solid #fff; display: inline-block; flex-shrink: 0; box-sizing: border-box; }
+
+    .found-strip { background: #fff; border-top: 1px solid #d4d0c8; border-left: 4px solid #C9922E; padding: 16px 24px; }
+    .found-strip h2 { font-family: 'Oswald', sans-serif; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; color: #B07C1E; margin-bottom: 6px; }
+    .found-strip p { font-size: 14px; color: #5a5a52; line-height: 1.55; max-width: 780px; }
   </style>
 </head>
 <body>
@@ -93,10 +97,15 @@
 <div id="status">Loading data...</div>
 <div id="map"></div>
 
+<div class="found-strip">
+  <h2>Found an animal?</h2>
+  <p>The quickest way home is a microchip scan — and it's free. Take the animal to any vet, SPCA, or shelter; they can scan for a microchip on the spot and contact the registered owner. We don't hold owner details ourselves — a quick scan is the safest, fastest way to get an animal home.</p>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <script>
-const SHEET_ID = 'PASTE_MISSING_SHEET_ID';
+const SHEET_ID = '1UZoA9oHVQTvljoDAX69arv8CRfhXG13dLoyi67HIQDI';
 const JSON_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Sheet1';
 
 var allData = [];
