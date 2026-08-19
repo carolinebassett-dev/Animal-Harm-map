@@ -201,6 +201,7 @@ const METHODS = {
   mauled:   { color: '#9B2D6B', label: 'Mauled' },
   stolen:   { color: '#2E8B57', label: 'Stolen' },
   poison:   { color: '#1a1a1a', label: 'Poison' },
+  doused:   { color: '#6B8E23', label: 'Doused in oil/petrol' },
   other:    { color: '#566573', label: 'Other' }
 };
 
@@ -256,6 +257,7 @@ function normaliseMethod(m) {
   if (s.includes('maul') || s.includes('dog attack') || s.includes('attacked')) return 'mauled';
   if (s.includes('stol') || s.includes('steal') || s.includes('taken') || s.includes('theft')) return 'stolen';
   if (s.includes('beat') || s.includes('hit') || s.includes('stab') || s.includes('kick')) return 'beaten';
+  if (s.includes('dous') || s.includes('dows') || s.includes('oil') || s.includes('petrol') || s.includes('fuel') || s.includes('accelerant')) return 'doused';
   return 'other';
 }
 
