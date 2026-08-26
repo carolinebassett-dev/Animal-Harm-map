@@ -161,6 +161,30 @@
     }
     .legend-row { display: flex; align-items: center; gap: 8px; color: #F0EEE8; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
     .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+    /* Alert pins */
+    .alert-pin { position: relative; }
+    .alert-pin .pulse {
+      position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px;
+      border-radius: 50%; background: rgba(229,66,31,0.45); animation: alertPulse 1.8s ease-out infinite;
+    }
+    @keyframes alertPulse {
+      0%   { transform: scale(0.4); opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+    .alert-pin .head {
+      position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -30px 0 0 -17px;
+      background: #E5421F; border: 3px solid #fff; border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg); box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    }
+    .alert-pin .mark {
+      position: absolute; left: 50%; top: 50%; margin: -28px 0 0 -17px; width: 34px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; line-height: 1;
+    }
+    .alert-popup h4 { font-family: 'Oswald', sans-serif; color: #E5421F; text-transform: uppercase; letter-spacing: 0.5px; font-size: 15px; margin: 0 0 4px; }
+    .alert-popup .meta { color: #888; font-size: 12px; margin-bottom: 6px; }
+    .alert-popup p { font-size: 13.5px; margin: 0; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -223,6 +247,9 @@ legend.onAdd = function() {
   + '<div class="legend-row"><span class="dot" style="background:#566573"></span>Deceased</div>'
   + '<div class="legend-row"><span class="dot" style="background:rgba(255,255,255,0.9);border:3px solid #566573;box-sizing:border-box"></span>Survived</div>'
   + '<div class="legend-row"><span class="dot" style="background:#E6D200;border:1px solid #6a6300;box-sizing:border-box"></span>Abandoned</div>'
+  + '</div>'
+  + '<div style="border-top:1px solid rgba(255,255,255,0.25);margin-top:8px;padding-top:8px">'
+  + '<div class="legend-row"><span class="dot" style="background:#E5421F;border:2px solid #fff;box-sizing:border-box;width:14px;height:14px"></span>⚠ Active alert</div>'
   + '</div>';
   return d;
 };
@@ -230,6 +257,11 @@ legend.addTo(leafletMap);
 
 clusterGroup = L.markerClusterGroup({ maxClusterRadius: 40 });
 leafletMap.addLayer(clusterGroup);
+
+// Alerts: a separate "Alerts" tab in the same sheet, shown as big red pins on top
+const ALERTS_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Alerts';
+var alertLayer = L.layerGroup();
+leafletMap.addLayer(alertLayer);
 
 function parseGviz(text) {
   var json = JSON.parse(text.replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
@@ -369,6 +401,39 @@ async function loadSheet() {
   }
 }
 
+async function loadAlerts() {
+  try {
+    var r = await fetch(ALERTS_URL);
+    if (!r.ok) return;                 // no Alerts tab yet — silently skip
+    var rows = parseGviz(await r.text());
+    alertLayer.clearLayers();
+    rows.forEach(function(a) {
+      var lat = parseFloat(a.lat), lng = parseFloat(a.lng);
+      if (!lat || !lng) return;
+      // Skip if explicitly switched off (active = no / false / 0)
+      var active = (a.active || '').toString().trim().toLowerCase();
+      if (active === 'no' || active === 'false' || active === '0') return;
+
+      var icon = L.divIcon({
+        className: '',
+        html: '<div class="alert-pin"><div class="pulse"></div><div class="head"></div><div class="mark">!</div></div>',
+        iconSize: [40, 40], iconAnchor: [20, 34]
+      });
+      var area = (a.suburb || '') + (a.region ? ', ' + a.region : '');
+      var marker = L.marker([lat, lng], { icon: icon, zIndexOffset: 1000 });
+      marker.bindPopup(
+        '<div class="alert-popup">' +
+        '<h4>⚠ ' + (a.title || 'Alert') + '</h4>' +
+        (area ? '<div class="meta">' + area + (a.date ? ' · ' + a.date : '') + '</div>' : (a.date ? '<div class="meta">' + a.date + '</div>' : '')) +
+        (a.description ? '<p>' + a.description + '</p>' : '') +
+        '</div>'
+      );
+      alertLayer.addLayer(marker);
+    });
+  } catch(e) { /* alerts are optional; ignore errors */ }
+}
+
+loadAlerts();
 loadSheet();
 </script>
 </body>
